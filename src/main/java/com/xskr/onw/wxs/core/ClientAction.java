@@ -2,6 +2,8 @@ package com.xskr.onw.wxs.core;
 //用于告知客户端行动身份特征
 public enum ClientAction {
 
+    ROOM_CREATED, //房间创建成功
+
     SINGLE_WOLF_ACTION, DRUNK_ACTION, ROBBER_ACTION, SEER_ACTION, TROUBLEMAKER_ACTION,  //玩家身份应进行的行动
 
     VOTE_ACTION,                    //投票

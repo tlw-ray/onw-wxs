@@ -1,4 +1,4 @@
-package com.xskr.onw.wxs.ws;
+package com.xskr.onw.wxs.stomp;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;

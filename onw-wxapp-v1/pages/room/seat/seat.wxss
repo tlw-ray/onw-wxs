@@ -1,0 +1,47 @@
+/* pages/create/seat/seat.wxss */
+.seatView{
+  display:flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items:stretch;
+  box-sizing: border-box;
+}
+.seatInformationView{
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  margin-left: 7%;
+  margin-top: 5%;
+}
+.seatNumberText{
+  display: flex;
+  flex-grow: 0;
+  justify-content: left;
+  align-items: flex-start;
+  font-size: 1.2em;
+}
+.seatCardView{
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.seatCardText{
+  flex-grow: 1;
+  justify-content: center;
+  font-size: 1.2em;
+  text-align: center;
+  display: table-cell; 
+  vertical-align: middle;
+}
+.playerNameText{
+  display: flex;
+  flex-grow: 0;
+  font-size: 0.6em;
+  text-align: right;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-right: 5%;
+}

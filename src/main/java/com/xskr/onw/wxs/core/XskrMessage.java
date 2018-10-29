@@ -1,4 +1,4 @@
-package com.xskr.onw.wxs.ws;
+package com.xskr.onw.wxs.core;
 
 
 import com.xskr.onw.wxs.core.ClientAction;

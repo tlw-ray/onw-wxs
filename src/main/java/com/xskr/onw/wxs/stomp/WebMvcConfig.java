@@ -1,4 +1,4 @@
-package com.xskr.onw.wxs.ws;
+package com.xskr.onw.wxs.stomp;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

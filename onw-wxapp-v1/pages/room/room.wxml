@@ -1,0 +1,65 @@
+<!--pages/room/room.wxml-->
+<view id="cardConfigView" class="greenBorder">
+  <view id="cardConfigRow1View">
+    <text class="cardConfigText lightCard">化</text>
+    <text class="cardConfigText darkCard">狼</text>
+    <text class="cardConfigText lightCard">狼</text>
+    <text class="cardConfigText darkCard">爪</text>
+    <text class="cardConfigText lightCard">预</text>
+    <text class="cardConfigText darkCard">盗</text>
+    <text class="cardConfigText lightCard">捣</text>
+    <text class="cardConfigText darkCard">失</text>
+  </view>
+  <view id="cardConfigRow2View">
+    <text class="cardConfigText darkCard">猎</text>
+    <text class="cardConfigText lightCard">酒</text>
+    <text class="cardConfigText darkCard">守</text>
+    <text class="cardConfigText lightCard">守</text>
+    <text class="cardConfigText darkCard">村</text>
+    <text class="cardConfigText lightCard">村</text>
+    <text class="cardConfigText darkCard">村</text>
+    <text class="cardConfigText lightCard">皮</text>
+  </view>
+</view>
+<view id="desktopView">
+  <view class="seatsView">
+    <seat seatNumber="1" guessCard="{{room.seats[0].card}}" playerName="{{room.openID2UserNameMap[room.seats[0].openID]}}" class="grayBorder lightCard"></seat>
+    <seat seatNumber="2" class="grayBorder lightCard"></seat>
+    <seat seatNumber="3" class="grayBorder lightCard"></seat>
+    <seat seatNumber="4" class="grayBorder lightCard"></seat>
+    <seat seatNumber="5" class="grayBorder lightCard"></seat>
+    <seat seatNumber="6" class="grayBorder lightCard"></seat>
+  </view>
+  <view id="centerView">
+    <view id="desktopCardsView">
+      <view class="desktopCardView grayBorder lightCard">
+        <text class="desktopCardNumberText">I</text>
+        <text class="desktopCardText">守</text>
+      </view>
+      <view class="desktopCardView grayBorder lightCard">
+        <text class="desktopCardNumberText">II</text>
+        <text class="desktopCardText">村</text>
+      </view>
+      <view class="desktopCardView grayBorder lightCard">
+        <text class="desktopCardNumberText">III</text>
+        <text class="desktopCardText">爪</text>
+      </view>
+    </view>
+    <view id="messageView" class="greenBorder">
+    
+    </view>
+  </view>
+  <view class="seatsView">
+    <seat seatNumber="7" guessCard="狼" playerName="VINCENT" class="grayBorder lightCard"></seat>
+    <seat seatNumber="8" class="grayBorder lightCard"></seat>
+    <seat seatNumber="9" class="grayBorder lightCard"></seat>
+    <seat seatNumber="10" class="grayBorder lightCard"></seat>
+    <seat seatNumber="11" class="grayBorder lightCard"></seat>
+    <seat seatNumber="12" class="grayBorder lightCard"></seat>
+  </view>
+</view>
+<view id="buttonView">
+  <button id="exitButton" bindtap='bindtapExit'>退出房间</button>
+  <button id="aboutButton">游戏说明</button>
+  <button id="readyButton">准备开始</button>
+</view>

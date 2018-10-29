@@ -1,0 +1,11 @@
+<!--pages/create/seat/seat.wxml-->
+<view class="seatView">
+  <view class="seatInformationView">
+    <text class="seatNumberText">{{seatNumber}}</text>
+    <!-- 增加此view为了让文字能够垂直居中-->
+    <view class="seatCardView">
+      <text class="seatCardText">{{guessCard}}</text>
+    </view>
+  </view>
+  <text class="playerNameText">{{playerName}}</text>
+</view>
