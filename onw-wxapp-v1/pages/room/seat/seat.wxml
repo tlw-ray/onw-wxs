@@ -7,5 +7,6 @@
       <text class="seatCardText">{{guessCard}}</text>
     </view>
   </view>
-  <text class="playerNameText">{{playerName}}</text>
+  <text wx:if="{{playerReady}}">®{{playerName}}</text>
+  <text wx:else class="playerNameText">{{playerName}}</text>
 </view>

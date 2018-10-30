@@ -22,8 +22,8 @@ public class Room {
 
     //房间号
     private int id;
-    // 该房间支持的所有卡牌
-    private Set<Card> cards = new HashSet();
+    // 该房间支持的所有卡牌被选中的状态
+    private boolean[] cardPicked = new boolean[Card.values().length];
     // 房间内的座位
     private List<Seat> seats = new ArrayList(MAX_SEAT);
     //进入房间还但没有座位的玩家
@@ -56,15 +56,14 @@ public class Room {
         logger.debug("new Room(id={})", id);
         this.id = id;
         //默认初始五张卡牌
-        this.cards.add(Card.WEREWOLF_1);
-        this.cards.add(Card.MINION);
-        this.cards.add(Card.SEER);
-        this.cards.add(Card.ROBBER);
-        this.cards.add(Card.INSOMNIAC);
+        this.pickRoleCards(Card.WEREWOLF_1, Card.MINION, Card.SEER, Card.ROBBER, Card.INSOMNIAC);
+        Set<Card> pickedCards = getPickedCards();
         for(int i=0;i<MAX_SEAT;i++){
             Seat seat = new Seat();
+            seat.setEnable(i<pickedCards.size());
             seats.add(seat);
         }
+        refreshSeatEnable();
     }
 
     /**
@@ -72,11 +71,7 @@ public class Room {
      * @return
      */
     public int getAvailableSeatCount(){
-        if(cards == null){
-            return -1;
-        }else{
-            return cards.size() - TABLE_DECK_THICKNESS;
-        }
+        return getPickedCards().size() - TABLE_DECK_THICKNESS;
     }
 
     /**
@@ -160,19 +155,20 @@ public class Room {
     /**
      * 玩家坐到指定位置, 当所有玩家都准备好时游戏自动开始
      * TODO 或许应该加个倒数5,4,3,2,1
-     * @param userName 玩家
+     * @param openid 玩家
      * @return 该玩家最终处于的ready状态
      */
-    public void setReady(String userName, boolean ready){
+    public void switchReady(String openid){
         if(scene == Scene.ACTIVATE || scene == Scene.VOTE) {
             //如果已经开始或正在投票则不可改变ready状态
         }else if(scene == Scene.PREPARE){
-            logger.debug("setReady(userName = {}, pickReady = {})", userName, ready);
-            Seat seat = getSeatByPlayerName(userName);
+//            logger.debug("switchReady(userName = {}, pickReady = {})", openid, ready);
+            Seat seat = getSeatByPlayerName(openid);
             if(seat != null) {
                 //玩家准备状态改变
+                boolean ready = !seat.isReady();
                 seat.setReady(ready);
-                XskrMessage xskrMessage = new XskrMessage("", ClientAction.ROOM_CHANGED, this);
+                XskrMessage xskrMessage = new XskrMessage("Player click ready.", ClientAction.ROOM_CHANGED, this);
                 sendMessage(xskrMessage);
                 if(ready) {
                     //检查是否能够触发游戏开始事件
@@ -194,11 +190,11 @@ public class Room {
                     //如果玩家取消准备那么不需要检查游戏是否开始
                 }
             }else{
-                if(observers.contains(userName)){
-                    String message = String.format("玩家%s是观看者，无法设定准备状态。", userName);
+                if(observers.contains(openid)){
+                    String message = String.format("玩家%s是观看者，无法设定准备状态。", openid);
                     throw new RuntimeException(message);
                 }else{
-                    String message = String.format("玩家%s不在该房间，无法设定准备状态。", userName);
+                    String message = String.format("玩家%s不在该房间，无法设定准备状态。", openid);
                     throw new RuntimeException(message);
                 }
             }
@@ -297,7 +293,7 @@ public class Room {
         XskrMessage xskrMessage = new XskrMessage("新一局开始了！", ClientAction.NEW_GAME, null);
         sendMessage(xskrMessage);
 
-        Deck deck = new Deck(cards.toArray(new Card[0]));
+        Deck deck = new Deck(getPickedCards().toArray(new Card[0]));
 
         //清空上一局所有角色的操作状态
         singleWolfCheckDesktopCard = null;
@@ -833,12 +829,14 @@ public class Room {
         if(openID.equals(getOwner())){
             if(scene == Scene.PREPARE){
                 //房主修改房间卡牌设定
-                Card pickedCard = Card.values()[roleCardID];
-                if(cards.contains(pickedCard)){
-                    cards.remove(pickedCard);
-                }else{
-                    cards.add(pickedCard);
-                }
+//                Card pickedCard = Card.values()[roleCardID];
+//                if(cards.contains(pickedCard)){
+//                    cards.remove(pickedCard);
+//                }else{
+//                    cards.add(pickedCard);
+//                }
+                pickRoleCard(roleCardID);
+                refreshSeatEnable();
                 //群体发送消息到客户端告知房间设置发生了变化
                 XskrMessage roomChangedMessage = new XskrMessage("房主修改房间卡牌设定。", ClientAction.ROOM_CHANGED, this);
                 sendMessage(roomChangedMessage);
@@ -1093,8 +1091,8 @@ public class Room {
     private void sendMessage(XskrMessage message){
         String roomWebSocketTopic = "/topic/" + id;
         if(simpMessagingTemplate != null) {
-            System.out.println("send topick: " + roomWebSocketTopic);
-            simpMessagingTemplate.convertAndSend(roomWebSocketTopic, message);
+            System.out.println("send topic: " + roomWebSocketTopic);
+            simpMessagingTemplate.convertAndSend("/topic/" + id, message);
         }else{
             System.out.println(String.format("sendMessage to All: %s", JSON.toJSONString(message, true)));
         }
@@ -1165,7 +1163,38 @@ public class Room {
         return observers;
     }
 
+    public boolean[] getCardPicked() {
+        return cardPicked;
+    }
+
     public Map<String, String> getOpenID2UserNameMap() {
         return openID2UserNameMap;
+    }
+
+    private void refreshSeatEnable(){
+        for(int i=0;i<MAX_SEAT;i++){
+            this.seats.get(i).setEnable(i<getAvailableSeatCount());
+        }
+    }
+
+    private void pickRoleCards(Card ... cards){
+        for(Card card:cards){
+            int index = Card.index(card);
+            pickRoleCard(index);
+        }
+    }
+
+    private void pickRoleCard(int idx){
+        cardPicked[idx] = !cardPicked[idx];
+    }
+
+    private Set<Card> getPickedCards(){
+        Set<Card> cards = new HashSet();
+        for(int i=0;i<cardPicked.length;i++){
+            if(cardPicked[i]){
+                cards.add(Card.values()[i]);
+            }
+        }
+        return cards;
     }
 }

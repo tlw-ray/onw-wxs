@@ -174,3 +174,10 @@ seat{
   background-color: #39B54A;
 }
 
+.seatDisable{
+  background-color: darkgray
+}
+
+.roleCardPicked{
+  background-color: darkgray
+}

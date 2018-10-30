@@ -1,7 +1,7 @@
 package com.xskr.onw.wxs.core;
 
 public enum Card {
-//	DOPPELGANGER,
+	DOPPELGANGER,
 	WEREWOLF_1, WEREWOLF_2, MINION,
 	MASON_1, MASON_2,
 	SEER, ROBBER, TROUBLEMAKER,
@@ -15,4 +15,12 @@ public enum Card {
 //	public String getDisplayName(){
 //		return resource.getString(this.name());
 //	}
+	public static int index(Card card){
+		for(int i=0;i<values().length;i++){
+			if(values()[i] == card){
+				return i;
+			}
+		}
+		return -1;
+	}
 }

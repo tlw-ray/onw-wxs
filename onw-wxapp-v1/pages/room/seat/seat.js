@@ -15,7 +15,16 @@ Component({
     playerName: {
       type: String,
       value: 'VINCENT'
+    },
+    playerReady:{
+      type: Boolean,
+      value: false
+    },
+    seatEnabled:{
+      type: Boolean,
+      value: true
     }
+    //TODO 需要不可点选、可选、被选择等若干状态
   },
 
   /**

@@ -57,7 +57,7 @@ App({
   }
   // initSocket: function () {
   //   var that = this;
-  //   var socketOpen = false
+  //   var socketOpen = false 
 
   //   function sendSocketMessage(msg) {
   //     console.log('send msg:' + msg)
@@ -102,7 +102,7 @@ App({
 
   //       //subscribe topic
   //       that.globalData.stompClient.subscribe('/topic/sendTo0', function (body, headers) {
-  //         console.log('From MQ /topic/greetings:', body);   
+  //         console.log('From MQ /topic/greetings:', body);
   //       }); 
   //       that.globalData.stompClient.send('/messageMapping0', { 'openid': openid }, "I'm topic!");  
 

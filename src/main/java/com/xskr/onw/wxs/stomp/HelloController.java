@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Controller
 @EnableScheduling
+@MessageMapping("/hello")
 public class HelloController {
 
     @Autowired
@@ -35,6 +37,12 @@ public class HelloController {
         result.put("说", "你好");
         return result;
     }
+
+//    @Scheduled(fixedRate = 2000)
+//    public void sendTopic(){
+//        System.out.println("sendTopic: /topic/0");
+//        simpMessageSendingOperations.convertAndSend("/topic/0", "test");
+//    }
 
     @SubscribeMapping("/topic/sendTo0")
     public String subscribeTopic(){
@@ -70,4 +78,5 @@ public class HelloController {
 //        System.out.println("Send to user: ");
 //        simpMessageSendingOperations.convertAndSendToUser("omIzT5ALUJkupsn4TX_4NWUqqRwU", "/message", "Queue Payload!!!");
 //    }
+
 }

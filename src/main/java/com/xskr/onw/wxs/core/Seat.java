@@ -25,6 +25,8 @@ public class Seat{
 	private Integer voteSeat;
 	//该座位玩家被投票的次数
 	private int votedCount;
+	//该座位是否可用
+	private boolean enable = true;
 	//该玩家的关键信息，供断线重连时提供
 	private List<XskrMessage> keyMessages = new ArrayList();
 
@@ -108,7 +110,16 @@ public class Seat{
 	public void setOldUserName(String oldUserName) {
 		this.oldUserName = oldUserName;
 	}
-//	public ClientAction getLastAction() {
+
+	public boolean isEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
+	//	public ClientAction getLastAction() {
 //	    if(keyMessages.size() > 0){
 //	        return keyMessages.get(keyMessages.size() - 1).getAction();
 //        }else{

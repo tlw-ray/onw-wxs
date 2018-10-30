@@ -1,48 +1,48 @@
 <!--pages/room/room.wxml-->
 <view id="cardConfigView" class="greenBorder">
   <view id="cardConfigRow1View">
-    <text class="cardConfigText lightCard">化</text>
-    <text class="cardConfigText darkCard">狼</text>
-    <text class="cardConfigText lightCard">狼</text>
-    <text class="cardConfigText darkCard">爪</text>
-    <text class="cardConfigText lightCard">预</text>
-    <text class="cardConfigText darkCard">盗</text>
-    <text class="cardConfigText lightCard">捣</text>
-    <text class="cardConfigText darkCard">失</text>
+    <text id="roleCard_00" class="cardConfigText lightCard {{room.cardPicked[0] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">化</text>
+    <text id="roleCard_01" class="cardConfigText darkCard {{room.cardPicked[1] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">狼</text>
+    <text id="roleCard_02" class="cardConfigText lightCard {{room.cardPicked[2] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">狼</text>
+    <text id="roleCard_03" class="cardConfigText darkCard {{room.cardPicked[3] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">爪</text>
+    <text id="roleCard_04" class="cardConfigText lightCard {{room.cardPicked[4] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">预</text>
+    <text id="roleCard_05" class="cardConfigText darkCard {{room.cardPicked[5] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">盗</text>
+    <text id="roleCard_06" class="cardConfigText lightCard {{room.cardPicked[6] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">捣</text>
+    <text id="roleCard_07" class="cardConfigText darkCard {{room.cardPicked[7] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">失</text>
   </view>
   <view id="cardConfigRow2View">
-    <text class="cardConfigText darkCard">猎</text>
-    <text class="cardConfigText lightCard">酒</text>
-    <text class="cardConfigText darkCard">守</text>
-    <text class="cardConfigText lightCard">守</text>
-    <text class="cardConfigText darkCard">村</text>
-    <text class="cardConfigText lightCard">村</text>
-    <text class="cardConfigText darkCard">村</text>
-    <text class="cardConfigText lightCard">皮</text>
+    <text id="roleCard_08" class="cardConfigText darkCard {{room.cardPicked[8] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">猎</text>
+    <text id="roleCard_09" class="cardConfigText lightCard {{room.cardPicked[9] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">酒</text>
+    <text id="roleCard_10" class="cardConfigText darkCard {{room.cardPicked[10] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">守</text>
+    <text id="roleCard_11" class="cardConfigText lightCard {{room.cardPicked[11] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">守</text>
+    <text id="roleCard_12" class="cardConfigText darkCard {{room.cardPicked[12] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">村</text>
+    <text id="roleCard_13" class="cardConfigText lightCard {{room.cardPicked[13] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">村</text>
+    <text id="roleCard_14" class="cardConfigText darkCard {{room.cardPicked[14] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">村</text>
+    <text id="roleCard_15" class="cardConfigText lightCard {{room.cardPicked[15] ? 'roleCardPicked' : ''}}" bindtap="bindtapRoleCard">皮</text>
   </view>
 </view>
 <view id="desktopView">
   <view class="seatsView">
-    <seat seatNumber="1" guessCard="{{room.seats[0].card}}" playerName="{{room.openID2UserNameMap[room.seats[0].openID]}}" class="grayBorder lightCard"></seat>
-    <seat seatNumber="2" class="grayBorder lightCard"></seat>
-    <seat seatNumber="3" class="grayBorder lightCard"></seat>
-    <seat seatNumber="4" class="grayBorder lightCard"></seat>
-    <seat seatNumber="5" class="grayBorder lightCard"></seat>
-    <seat seatNumber="6" class="grayBorder lightCard"></seat>
+    <seat seatNumber="1" guessCard="{{room.seats[0].card}}" playerName="{{room.openID2UserNameMap[room.seats[0].openID]}}" playerReady="{{room.seats[0].ready}}" class="grayBorder lightCard {{room.seats[0].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="2" guessCard="{{room.seats[1].card}}" playerName="{{room.openID2UserNameMap[room.seats[1].openID]}}" class="grayBorder lightCard {{room.seats[1].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="3" guessCard="{{room.seats[2].card}}" playerName="{{room.openID2UserNameMap[room.seats[2].openID]}}" class="grayBorder lightCard {{room.seats[2].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="4" guessCard="{{room.seats[3].card}}" playerName="{{room.openID2UserNameMap[room.seats[3].openID]}}" class="grayBorder lightCard {{room.seats[3].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="5" guessCard="{{room.seats[4].card}}" playerName="{{room.openID2UserNameMap[room.seats[4].openID]}}" class="grayBorder lightCard {{room.seats[4].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="6" guessCard="{{room.seats[5].card}}" playerName="{{room.openID2UserNameMap[room.seats[5].openID]}}" class="grayBorder lightCard {{room.seats[5].enable ? '' : 'seatDisable'}}"></seat>
   </view>
   <view id="centerView">
     <view id="desktopCardsView">
       <view class="desktopCardView grayBorder lightCard">
         <text class="desktopCardNumberText">I</text>
-        <text class="desktopCardText">守</text>
+        <text class="desktopCardText">?</text>
       </view>
       <view class="desktopCardView grayBorder lightCard">
         <text class="desktopCardNumberText">II</text>
-        <text class="desktopCardText">村</text>
+        <text class="desktopCardText">?</text>
       </view>
       <view class="desktopCardView grayBorder lightCard">
         <text class="desktopCardNumberText">III</text>
-        <text class="desktopCardText">爪</text>
+        <text class="desktopCardText">?</text>
       </view>
     </view>
     <view id="messageView" class="greenBorder">
@@ -50,16 +50,16 @@
     </view>
   </view>
   <view class="seatsView">
-    <seat seatNumber="7" guessCard="狼" playerName="VINCENT" class="grayBorder lightCard"></seat>
-    <seat seatNumber="8" class="grayBorder lightCard"></seat>
-    <seat seatNumber="9" class="grayBorder lightCard"></seat>
-    <seat seatNumber="10" class="grayBorder lightCard"></seat>
-    <seat seatNumber="11" class="grayBorder lightCard"></seat>
-    <seat seatNumber="12" class="grayBorder lightCard"></seat>
+    <seat seatNumber="7" guessCard="{{room.seats[6].card}}" playerName="{{room.openID2UserNameMap[room.seats[6].openID]}}" class="grayBorder lightCard {{room.seats[6].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="8" guessCard="{{room.seats[7].card}}" playerName="{{room.openID2UserNameMap[room.seats[7].openID]}}" class="grayBorder lightCard {{room.seats[7].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="9" guessCard="{{room.seats[8].card}}" playerName="{{room.openID2UserNameMap[room.seats[8].openID]}}" class="grayBorder lightCard {{room.seats[8].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="10" guessCard="{{room.seats[9].card}}" playerName="{{room.openID2UserNameMap[room.seats[9].openID]}}" class="grayBorder lightCard {{room.seats[9].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="11" guessCard="{{room.seats[10].card}}" playerName="{{room.openID2UserNameMap[room.seats[10].openID]}}" class="grayBorder lightCard {{room.seats[10].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="12" guessCard="{{room.seats[11].card}}" playerName="{{room.openID2UserNameMap[room.seats[11].openID]}}" class="grayBorder lightCard {{room.seats[11].enable ? '' : 'seatDisable'}}"></seat>
   </view>
 </view>
 <view id="buttonView">
   <button id="exitButton" bindtap='bindtapExit'>退出房间</button>
   <button id="aboutButton">游戏说明</button>
-  <button id="readyButton">准备开始</button>
+  <button id="readyButton" bindtap='bindtapReady'>准备开始</button>
 </view>

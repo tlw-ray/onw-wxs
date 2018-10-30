@@ -7,15 +7,13 @@ import com.xskr.onw.wxs.core.XskrMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.socket.messaging.SubProtocolWebSocketHandler;
 
 import java.io.IOException;
 import java.util.*;
@@ -60,34 +58,38 @@ public class RoomController {
     }
 
     /**
+     * 玩家设定准备, 如果所有玩家均已准备则触发游戏开始
+     */
+    @MessageMapping("/ready")
+    public void pickReady(@Headers Map<String, LinkedMultiValueMap> headers, String payload) {
+        String openID = getOpenID(headers);
+        int roomID = getRoomID(headers);
+        Room room = hall.getRoom(roomID);
+        room.switchReady(openID);
+    }
+
+//    @Scheduled(fixedRate = 5000)
+//    public void sendToTopic(){
+//        System.out.println("send");
+//        simpMessagingTemplate.convertAndSend("/onw/room/topic/0", "test01");
+//        simpMessagingTemplate.convertAndSend("/topic/0", "test02");
+//    }
+
+    /**
      * 设定房间角色和座位数
      */
     @MessageMapping("/roleCard")
-    public void setRoleCards(@Headers Map<String, String> headers, String payload) throws IOException {
-        String openID = headers.get(KEY_OPEN_ID);
-        Integer roomID = Integer.parseInt(headers.get(KEY_ROOM_ID));
-        Integer roleCardID = Integer.parseInt(headers.get(KEY_ROLE_CARD_ID));
+    public void setRoleCards(@Headers Map<String, LinkedMultiValueMap> headers, String payload) throws IOException {
+        String openID = getOpenID(headers);
+        int roomID = getRoomID(headers);
+        int roleCardID = getHeadIntegerValue(headers, KEY_ROLE_CARD_ID);
+        System.out.println("roleCardID: " + roleCardID);
         Room room = hall.getRoom(roomID);
         room.pickRoleCard(openID, roleCardID);
     }
 
-
-    /**
-     * 玩家设定准备, 如果所有玩家均已准备则触发游戏开始
-     */
-    @MessageMapping("/ready")
-    public void pickReady(@Headers Map<String, String> headers, String payload) {
-        String openID = headers.get(KEY_OPEN_ID);
-        Integer roomID = Integer.parseInt(headers.get(KEY_ROOM_ID));
-        boolean ready = Boolean.parseBoolean(headers.get(KEY_READY));
-        Room room = hall.getRoom(roomID);
-        room.setReady(openID, ready);
-    }
-
     /**
      * 获得某个座位已有的关键信息
-     *
-     * @return
      */
     @MessageMapping("/keyMessages")
     public void getKeyMessages(@Headers Map<String, String> headers, String payload) {
@@ -146,6 +148,13 @@ public class RoomController {
     private int getRoomID(Map<String, LinkedMultiValueMap> headers){
         LinkedMultiValueMap nativeHeaders = headers.get("nativeHeaders");
         LinkedList roomIDs = (LinkedList)nativeHeaders.get("roomID");
+        int roomID = Integer.parseInt(roomIDs.get(0).toString());
+        return roomID;
+    }
+
+    private int getHeadIntegerValue(Map<String, LinkedMultiValueMap> headers, String key){
+        LinkedMultiValueMap nativeHeaders = headers.get("nativeHeaders");
+        LinkedList roomIDs = (LinkedList)nativeHeaders.get(key);
         int roomID = Integer.parseInt(roomIDs.get(0).toString());
         return roomID;
     }

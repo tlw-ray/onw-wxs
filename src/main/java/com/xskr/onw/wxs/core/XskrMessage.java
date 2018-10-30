@@ -1,8 +1,5 @@
 package com.xskr.onw.wxs.core;
 
-
-import com.xskr.onw.wxs.core.ClientAction;
-
 public class XskrMessage {
     //要传递的消息
     private String message;

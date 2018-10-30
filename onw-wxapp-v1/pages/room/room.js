@@ -9,6 +9,10 @@ Page({
     room: undefined,
     //websocket客户端
     stompClient: undefined,
+    //socket的连接状态
+    socketOpen: false,
+    //socket被期待的连接状态
+    socketNeedOpen: true,
     //广播订阅
     subscribedTopic: undefined,
     //点对点订阅
@@ -32,7 +36,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    
   },
 
   /**
@@ -54,8 +58,29 @@ Page({
    */
   onUnload: function () {
     //卸载ws订阅
+    console.log('onUnload');
     var that = this;
+    this.socketNeedOpen = false;
 
+    if (this.data.subscribedTopic != null) {
+      this.data.subscribedTopic.unsubscribe();
+      console.info("Unsubscribe topic: " + this.data.subscribedTopic);
+    }
+    if (this.data.subscribedMessage != null) {
+      this.data.subscribedMessage.unsubscribe();
+      console.info("Unsubscribe message: " + this.data.subscribedMessage);
+    }
+    if (this.data.stompClient != null) {
+      this.data.stompClient.disconnect(function () {
+        console.info("Disconnect stompClient: ");
+        var openid = wx.getStorageSync('openid');
+        var roomID = wx.getStorageSync('roomID');
+        wx.request({
+          url: getApp().globalData.httpAPI + '/hall/leave/' + openid + '/' + roomID
+        })
+        wx.setStorageSync('roomID', undefined);
+      })
+    }
   },
 
   /**
@@ -79,50 +104,42 @@ Page({
 
   },
   bindtapExit: function(){
-    if(this.data.subscribedTopic != null){
-      this.data.subscribedTopic.unsubscribe();
-      console.info("Unsubscribe topic: " + this.data.subscribedTopic);
-    }
-    if(this.data.subscribedMessage != null){
-      this.data.subscribedMessage.unsubscribe();
-      console.info("Unsubscribe message: " + this.data.subscribedMessage);
-    } 
-    if(this.data.stompClient != null){
-      this.data.stompClient.disconnect(function () {
-        console.info("Disconnect stompClient: ");
-        var openid = wx.getStorageSync('openid');
-        var roomID = wx.getStorageSync('roomID');
-        wx.request({
-          url: getApp().globalData.httpAPI + '/hall/leave/' + openid + '/' + roomID,
-          success (res) {
-            wx.navigateTo({
-              url: '../index/index',
-            })
-            wx.setStorageSync('roomID', undefined);
-          },
-          fail (res) {
-            wx.navigateTo({
-              url: '../index/index',
-            })
-          }
-        })
-      })
-    }
+
+  },
+  bindtapRoleCard: function (event){
+    var openid = wx.getStorageSync('openid');
+    var roomID = wx.getStorageSync('roomID');
+    var roleCardIDString = event.target.id.substring('roleCard_'.length);
+    var roleCardID = new Number(roleCardIDString);
+    console.log("click: " + roleCardID);
+    this.data.stompClient.send('/onw/room/roleCard', { 'openid': openid, 'roomID': roomID, 'roleCardID': roleCardID }, "Request ready.");
+  },
+  bindtapReady: function(){
+    var openid = wx.getStorageSync('openid');
+    var roomID = wx.getStorageSync('roomID');
+    this.data.stompClient.send('/onw/room/ready', { 'openid': openid, 'roomID': roomID }, "Request ready.");
   },
   initSocket: function () {
     var that = this;
-    var socketOpen = false;
+    this.socketNeedOpen = true;
     var socketMsgQueue = []
     var ws = {
       // send: sendSocketMessage
       send: function (msg) {
         console.log('send msg:' + msg)
-        if (socketOpen) {
+        if (that.socketOpen) {
+          if(socketMsgQueue.length > 0){
+            for(var idx in socketMsgQueue){
+              wx.sendSocketMessage({
+                data: socketMsgQueue[idx]
+              })
+            }
+            socketMsgQueue = []
+          }
           wx.sendSocketMessage({
             data: msg
           })
         } else {
-          //todo ?
           socketMsgQueue.push(msg)
         }
       },
@@ -136,7 +153,7 @@ Page({
     })
     
     wx.onSocketOpen(function (res) {
-      socketOpen = true
+      that.socketOpen = true
       console.log(res);
       ws.onopen();
     })
@@ -148,12 +165,14 @@ Page({
 
     wx.onSocketClose(function (res) {
       console.log('WebSocket 已关闭！');
-      socketOpen = false;
-      setTimeout(function(){
-        wx.connectSocket({
-          url: getApp().globalData.wssAPI
-        })
-      }, 2000);
+      that.socketOpen = false;
+      if(that.socketNeedOpen){
+        setTimeout(function () {
+          wx.connectSocket({
+            url: getApp().globalData.wssAPI
+          })
+        }, 2000);
+      }
     })
 
     if (that.stompClient == null) {
@@ -170,10 +189,15 @@ Page({
         console.log('openid = ' + JSON.stringify(openid));
 
         // subscribe topic
-        that.data.subscribedTopic = that.data.stompClient.subscribe('/onw/room/topic/' + roomID, function (body, headers) {
+        that.data.subscribedTopic = that.data.stompClient.subscribe('/topic/' + roomID, function (content, headers) {
           console.log('From::::::::: /topic/' + roomID);
-          console.log('head: ' + JSON.stringify(headers));
-          console.log('body: ' + JSON.stringify(body));
+          console.log(content.body);
+          var xskrMessage = JSON.parse(content.body);
+          if (xskrMessage.action == 'ROOM_CHANGED') {
+            that.setData({
+              room: xskrMessage.data
+            });
+          }
         }); 
         // that.data.stompClient.send('/messageMapping0', { 'openid': openid }, "I'm topic!");  
 
