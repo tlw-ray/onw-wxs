@@ -23,12 +23,12 @@
 </view>
 <view id="desktopView">
   <view class="seatsView">
-    <seat seatNumber="1" guessCard="{{room.seats[0].card}}" playerName="{{room.openID2UserNameMap[room.seats[0].openID]}}" playerReady="{{room.seats[0].ready}}" class="grayBorder lightCard {{room.seats[0].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="2" guessCard="{{room.seats[1].card}}" playerName="{{room.openID2UserNameMap[room.seats[1].openID]}}" class="grayBorder lightCard {{room.seats[1].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="3" guessCard="{{room.seats[2].card}}" playerName="{{room.openID2UserNameMap[room.seats[2].openID]}}" class="grayBorder lightCard {{room.seats[2].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="4" guessCard="{{room.seats[3].card}}" playerName="{{room.openID2UserNameMap[room.seats[3].openID]}}" class="grayBorder lightCard {{room.seats[3].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="5" guessCard="{{room.seats[4].card}}" playerName="{{room.openID2UserNameMap[room.seats[4].openID]}}" class="grayBorder lightCard {{room.seats[4].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="6" guessCard="{{room.seats[5].card}}" playerName="{{room.openID2UserNameMap[room.seats[5].openID]}}" class="grayBorder lightCard {{room.seats[5].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="1" guessCard="{{room.seats[0].card}}" playerName="{{room.openidUserMap[room.seats[0].openid]['nickName']}}" playerIcon="{{room.openidUserMap[room.seats[0].openid]['avatarUrl']}}" playerReady="{{room.seats[0].ready}}" class="grayBorder lightCard {{room.seats[0].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="2" guessCard="{{room.seats[1].card}}" playerName="{{room.openidUserMap[room.seats[1].openid]}}" class="grayBorder lightCard {{room.seats[1].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="3" guessCard="{{room.seats[2].card}}" playerName="{{room.openidUserMap[room.seats[2].openid]}}" class="grayBorder lightCard {{room.seats[2].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="4" guessCard="{{room.seats[3].card}}" playerName="{{room.openidUserMap[room.seats[3].openid]}}" class="grayBorder lightCard {{room.seats[3].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="5" guessCard="{{room.seats[4].card}}" playerName="{{room.openidUserMap[room.seats[4].openid]}}" class="grayBorder lightCard {{room.seats[4].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="6" guessCard="{{room.seats[5].card}}" playerName="{{room.openidUserMap[room.seats[5].openid]}}" class="grayBorder lightCard {{room.seats[5].enable ? '' : 'seatDisable'}}"></seat>
   </view>
   <view id="centerView">
     <view id="desktopCardsView">
@@ -46,16 +46,16 @@
       </view>
     </view>
     <view id="messageView" class="greenBorder">
-    
+
     </view>
   </view>
   <view class="seatsView">
-    <seat seatNumber="7" guessCard="{{room.seats[6].card}}" playerName="{{room.openID2UserNameMap[room.seats[6].openID]}}" class="grayBorder lightCard {{room.seats[6].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="8" guessCard="{{room.seats[7].card}}" playerName="{{room.openID2UserNameMap[room.seats[7].openID]}}" class="grayBorder lightCard {{room.seats[7].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="9" guessCard="{{room.seats[8].card}}" playerName="{{room.openID2UserNameMap[room.seats[8].openID]}}" class="grayBorder lightCard {{room.seats[8].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="10" guessCard="{{room.seats[9].card}}" playerName="{{room.openID2UserNameMap[room.seats[9].openID]}}" class="grayBorder lightCard {{room.seats[9].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="11" guessCard="{{room.seats[10].card}}" playerName="{{room.openID2UserNameMap[room.seats[10].openID]}}" class="grayBorder lightCard {{room.seats[10].enable ? '' : 'seatDisable'}}"></seat>
-    <seat seatNumber="12" guessCard="{{room.seats[11].card}}" playerName="{{room.openID2UserNameMap[room.seats[11].openID]}}" class="grayBorder lightCard {{room.seats[11].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="7" guessCard="{{room.seats[6].card}}" playerName="{{room.openidUserMap[room.seats[6].openid]}}" class="grayBorder lightCard {{room.seats[6].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="8" guessCard="{{room.seats[7].card}}" playerName="{{room.openidUserMap[room.seats[7].openid]}}" class="grayBorder lightCard {{room.seats[7].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="9" guessCard="{{room.seats[8].card}}" playerName="{{room.openidUserMap[room.seats[8].openid]}}" class="grayBorder lightCard {{room.seats[8].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="10" guessCard="{{room.seats[9].card}}" playerName="{{room.openidUserMap[room.seats[9].openid]}}" class="grayBorder lightCard {{room.seats[9].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="11" guessCard="{{room.seats[10].card}}" playerName="{{room.openidUserMap[room.seats[10].openid]}}" class="grayBorder lightCard {{room.seats[10].enable ? '' : 'seatDisable'}}"></seat>
+    <seat seatNumber="12" guessCard="{{room.seats[11].card}}" playerName="{{room.openidUserMap[room.seats[11].openid]}}" class="grayBorder lightCard {{room.seats[11].enable ? '' : 'seatDisable'}}"></seat>
   </view>
 </view>
 <view id="buttonView">

@@ -16,6 +16,10 @@ Component({
       type: String,
       value: 'VINCENT'
     },
+    playerIcon: {
+      type: String,
+      value: undefined
+    },
     playerReady:{
       type: Boolean,
       value: false

@@ -1,10 +1,15 @@
 package com.xskr.onw.wxs.web;
 
+import com.alibaba.fastjson.JSONReader;
 import com.xskr.onw.wxs.core.Hall;
+import com.xskr.onw.wxs.core.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/onw/hall")
@@ -18,13 +23,18 @@ public class HallController {
         return hall.create();
     }
 
-    @RequestMapping("/join/{openID}/{userName}/{roomID}")
-    public boolean join(@PathVariable String openID, @PathVariable String userName, @PathVariable int roomID){
-        return hall.join(openID, userName, roomID);
+    @RequestMapping(path = "/join", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public boolean join(@RequestBody Map<String, String> param){
+        String openid = param.get("openid");
+        String nickName = param.get("nickName");
+        String avatarUrl = param.get("avatarUrl");
+        int roomID = Integer.parseInt(param.get("roomID"));
+        WxUser wxUser = new WxUser(openid, nickName, avatarUrl);
+        return hall.join(wxUser, roomID);
     }
 
-    @RequestMapping("/leave/{openID}/{roomID}")
-    public boolean leave(@PathVariable String openID, @PathVariable int roomID){
-        return hall.leave(openID, roomID);
+    @RequestMapping("/leave/{openid}/{roomID}")
+    public boolean leave(@PathVariable String openid, @PathVariable int roomID){
+        return hall.leave(openid, roomID);
     }
 }

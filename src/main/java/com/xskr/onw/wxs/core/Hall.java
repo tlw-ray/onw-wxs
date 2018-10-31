@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,6 +21,7 @@ public class Hall {
 
     private static int RoomID_Generator = 0;
     private Map<Integer, Room> idRoomMap = Collections.synchronizedMap(new TreeMap());
+    private Map<WxUser, Room> userRoomMap = Collections.synchronizedMap(new HashMap());
 
     public synchronized int create(){
         int roomID = RoomID_Generator++;
@@ -29,10 +31,13 @@ public class Hall {
         return roomID;
     }
 
-    public synchronized boolean join(String openID, String userName, int roomID){
+    public synchronized boolean join(WxUser wxUser, int roomID){
         Room room = idRoomMap.get(roomID);
         if(room != null){
-            room.join(openID, userName);
+            //TODO 检查该玩家是否在其他房间没有退出
+            //TODO 房间容量上限防止过多人加入
+            room.join(wxUser);
+            userRoomMap.put(wxUser, room);
             return true;
         }else{
             logger.error("加入房间失败，房间{}不存在.", roomID);
@@ -45,10 +50,11 @@ public class Hall {
         Room room = idRoomMap.get(roomID);
         if(room != null) {
             room.leave(user);
+            userRoomMap.remove(user);
             //检查房间内是否还有玩家
             boolean hasPlayer = false;
             for (Seat seat : room.getSeats()) {
-                if (seat.getOpenID() != null) {
+                if (seat.getOpenid() != null) {
                     hasPlayer = true;
                     break;
                 }

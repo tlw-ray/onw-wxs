@@ -43,9 +43,26 @@ Page({
     var that = this;
     var openid = wx.getStorageSync('openid');
     var nickName = wx.getStorageSync('nickName');
+    var avatarUrl = wx.getStorageSync('avatarUrl');
+  //   wx.request({
+  //     url: httpAPI + '/hall/join',
+  //     data: body,
+  //     method: "POST",
+  //     success: function (res) {
+  //       console.log(res.data)
+  //     }
+  //   })
+  // },
     wx.request({
       //加入房间
-      url: httpAPI + '/hall/join/' + openid + '/' + nickName + '/' + roomID,
+      url: httpAPI + '/hall/join',
+      method: 'POST',
+      data: {
+        "openid": openid,
+        "nickName": nickName,
+        "avatarUrl": avatarUrl,
+        "roomID": roomID
+      },
       success(res) {
         if(res.data){
           //记录房间号
@@ -76,6 +93,8 @@ Page({
           userInfo: res.userInfo,
           hasUserInfo: true
         })
+        console.log('callback: ' + res.userInfo.avatarUrl);
+        wx.setStorageSync('avatarUrl', res.userInfo.avatarUrl)
       }
     } else {
       // 在没有 open-type=getUserInfo 版本的兼容处理

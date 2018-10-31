@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Seat{
 	//座位上的玩家如果为null说明该座位没有人坐
-	private String openID;
+	private String openid;
 	//该座位之前玩家，用于断线重连，这名玩家可能断线了也可能有事情离开了房间
 	private String oldUserName;
 	//该座位的初始卡牌
@@ -39,8 +39,8 @@ public class Seat{
 //	    votedCount = 0;
 	    keyMessages.clear();
     }
-	public String getOpenID() {
-		return openID;
+	public String getOpenid() {
+		return openid;
 	}
 
 	public Card getCard() {
@@ -87,11 +87,11 @@ public class Seat{
 		this.initializeCard = initializeCard;
 	}
 
-	public void setOpenID(String openID) {
-		this.openID = openID;
+	public void setOpenid(String openid) {
+		this.openid = openid;
 		//设定旧的玩家
-		if(openID != null){
-			this.oldUserName = openID;
+		if(openid != null){
+			this.oldUserName = openid;
 		}
 	}
 
@@ -146,7 +146,7 @@ public class Seat{
 //                return Integer.compare(getLocation(), o.getLocation());
 //            }else{
 //		        //否则按照姓名排序，作为observer
-//		        return getOpenID().compareTo(o.getOpenID());
+//		        return getOpenid().compareTo(o.getOpenid());
 //            }
 //		}
 //	}
@@ -154,7 +154,7 @@ public class Seat{
     @Override
     public String toString() {
         return "Seat{" +
-                "openID='" + openID + '\'' +
+                "openid='" + openid + '\'' +
                 ", card=" + card +
                 ", voteSeat=" + voteSeat +
                 '}';
