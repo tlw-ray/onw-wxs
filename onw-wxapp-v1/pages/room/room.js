@@ -17,6 +17,10 @@ Page({
     subscribedTopic: undefined,
     //点对点订阅
     subscribedMessage: undefined,
+    //消息框标题
+    messageTitleText: '消息 ▼',
+    //消息内容隐藏
+    messageContentTextHidden: 'visible',
   },
 
   /**
@@ -112,12 +116,44 @@ Page({
     var roleCardIDString = event.target.id.substring('roleCard_'.length);
     var roleCardID = new Number(roleCardIDString);
     console.log("click: " + roleCardID);
-    this.data.stompClient.send('/onw/room/roleCard', { 'openid': openid, 'roomID': roomID, 'roleCardID': roleCardID }, "Request ready.");
+    this.data.stompClient.send('/onw/room/roleCard', { 'openid': openid, 'roomID': roomID, 'roleCardID': roleCardID }, "Click role card.");
   },
   bindtapReady: function(){
     var openid = wx.getStorageSync('openid');
     var roomID = wx.getStorageSync('roomID');
+    
     this.data.stompClient.send('/onw/room/ready', { 'openid': openid, 'roomID': roomID }, "Request ready.");
+  },
+  bindtapDesktopCard: function(event){
+    var openid = wx.getStorageSync('openid');
+    var roomID = wx.getStorageSync('roomID');
+    var desktopCardIDString = event.target.id.substring('desktopCard_'.length);
+    var desktopCardID = new Number(desktopCardIDString);
+    console.log("click desktop card: " + desktopCardID);
+    this.data.stompClient.send('/onw/room/desktopCard', { 'openid': openid, 'roomID': roomID, 'desktopCardID': desktopCardID }, "Click desktop card.");
+  },
+  bindtapMessageTitleText: function(event){
+    var messageTitleText = event.target.id;
+    if (this.data.messageTitleText == '消息 ▼'){
+      this.setData({
+        messageTitleText: '消息 ◀',
+        messageContentTextHidden: 'hidden'
+      })
+    } else{
+      this.setData({
+        messageTitleText: '消息 ▼',
+        messageContentTextHidden: 'visible'
+      })
+    }
+  },
+  bindtapSeat: function(event){
+    console.log(event);
+    var openid = wx.getStorageSync('openid');
+    var roomID = wx.getStorageSync('roomID');
+    var seatIDString = event.target.id.substring('seat_'.length);
+    var seatID = new Number(seatIDString);
+    console.log("click seat: " + seatID);
+    this.data.stompClient.send('/onw/room/seat', { 'openid': openid, 'roomID': roomID, 'seatID': seatID }, "Click seat.");
   },
   initSocket: function () {
     var that = this;

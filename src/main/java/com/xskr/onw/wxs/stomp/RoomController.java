@@ -89,6 +89,32 @@ public class RoomController {
     }
 
     /**
+     * 玩家点击了桌上的一张牌
+     */
+    @MessageMapping("/desktopCard")
+    public void pickDesktopCard(@Headers Map<String, LinkedMultiValueMap> headers, String payload) {
+        System.out.println("desktopCard");
+        String openID = getOpenID(headers);
+        int roomID = getRoomID(headers);
+        int desktopCardID = getHeadIntegerValue(headers, KEY_DESKTOP_CARD_ID);
+        Room room = hall.getRoom(roomID);
+        room.pickDesktopCard(openID, desktopCardID);
+    }
+
+    /**
+     * 玩家点了某个座位
+     */
+    @MessageMapping("/seat")
+    public void pickSeat(@Headers Map<String, LinkedMultiValueMap> headers, String payload) {
+        System.out.println("seat");
+        String openID = getOpenID(headers);
+        int roomID = getRoomID(headers);
+        int seatID = getHeadIntegerValue(headers, KEY_SEAT_ID);
+        Room room = hall.getRoom(roomID);
+        room.pickSeat(openID, seatID);
+    }
+
+    /**
      * 获得某个座位已有的关键信息
      */
     @MessageMapping("/keyMessages")
@@ -98,32 +124,6 @@ public class RoomController {
         Room room = hall.getRoom(roomID);
         List<String> keyMessages = room.getKeyMessages(openID);
         //TODO send
-    }
-
-    /**
-     * 玩家点击了桌上的一张牌
-     *
-     * @return
-     */
-    @MessageMapping("/desktopCard")
-    public void pickDesktopCard(@Headers Map<String, String> headers, String payload) {
-        String openID = headers.get(KEY_OPEN_ID);
-        Integer roomID = Integer.parseInt(headers.get(KEY_ROOM_ID));
-        int cardID = Integer.parseInt(headers.get(KEY_ROLE_CARD_ID));
-        Room room = hall.getRoom(roomID);
-        room.pickDesktopCard(openID, cardID);
-    }
-
-    /**
-     * 玩家点了某个座位
-     */
-    @MessageMapping("/seat")
-    public void pickSeat(@Headers Map<String, String> headers, String payload) {
-        String openID = headers.get(KEY_OPEN_ID);
-        Integer roomID = Integer.parseInt(headers.get(KEY_ROOM_ID));
-        int seatID = Integer.parseInt(headers.get(KEY_SEAT_ID));
-        Room room = hall.getRoom(roomID);
-        room.pickSeat(openID, seatID);
     }
 
     private void showHeader(@Headers Map<String, LinkedMultiValueMap> headers, Object payload){

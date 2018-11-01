@@ -28,6 +28,11 @@
   align-items: center;
 }
 
+.seatCardView image{
+  width: 60%;
+  height: 60%;
+}
+
 .seatCardText{
   flex-grow: 1;
   justify-content: center;

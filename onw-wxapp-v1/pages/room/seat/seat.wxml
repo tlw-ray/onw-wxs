@@ -5,7 +5,7 @@
     <!-- 增加此view为了让文字能够垂直居中-->
     <view class="seatCardView">
       <!-- <text class="seatCardText">{{guessCard}}</text> -->
-      <image src="{{avatarUrl}}" mode="cover"></image>
+      <image src="{{playerIcon}}" mode="cover"></image>
     </view>
   </view>
   <text wx:if="{{playerReady}}">®{{playerName}}</text>

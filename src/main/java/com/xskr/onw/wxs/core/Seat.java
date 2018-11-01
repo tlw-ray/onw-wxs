@@ -36,7 +36,6 @@ public class Seat{
 	    card = null;
 	    ready = false;
 	    voteSeat = null;
-//	    votedCount = 0;
 	    keyMessages.clear();
     }
 	public String getOpenid() {
@@ -118,38 +117,6 @@ public class Seat{
 	public void setEnable(boolean enable) {
 		this.enable = enable;
 	}
-
-	//	public ClientAction getLastAction() {
-//	    if(keyMessages.size() > 0){
-//	        return keyMessages.get(keyMessages.size() - 1).getAction();
-//        }else{
-//	        return null;
-//        }
-//	}
-
-//	@JsonIgnore
-//	public Room getRoom() {
-//		return room;
-//	}
-//
-//	public void setRoom(Room room) {
-//		this.room = room;
-//	}
-//
-//	@Override
-//	public int compareTo(Seat o) {
-//		if(o == null){
-//			return 1;
-//		}else{
-//		    if(getLocation() != null && o.getLocation() != null) {
-//                //如果都有座位号就按照座位号排序，作为player
-//                return Integer.compare(getLocation(), o.getLocation());
-//            }else{
-//		        //否则按照姓名排序，作为observer
-//		        return getOpenid().compareTo(o.getOpenid());
-//            }
-//		}
-//	}
 
     @Override
     public String toString() {

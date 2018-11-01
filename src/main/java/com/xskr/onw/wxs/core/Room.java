@@ -32,7 +32,6 @@ public class Room {
     private TreeMap<Integer, Card> desktopCards = new TreeMap();
 
     // 房主用户名
-//    private String owner;
     private Map<String, WxUser> openidUserMap = new HashMap();
 
     // 玩家夜间操作
@@ -1123,14 +1122,6 @@ public class Room {
             return null;
         }
     }
-//    public ClientAction getLastClientAction(String userName){
-//        Seat playerSeat = getSeatByUserName(userName);
-//        if(playerSeat != null) {
-//            return playerSeat.getLastAction();
-//        }else{
-//            return null;
-//        }
-//    }
 
     private String getDisplayName(Card card){
         switch(card){
@@ -1152,10 +1143,6 @@ public class Room {
             default: return card.toString();
         }
     }
-
-//    public String getOwner() {
-//        return owner;
-//    }
 
     public List<Seat> getSeats() {
         return seats;
