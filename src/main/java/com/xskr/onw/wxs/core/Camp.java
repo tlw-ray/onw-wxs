@@ -1,5 +1,7 @@
 package com.xskr.onw.wxs.core;
 
+import com.xskr.onw.wxs.core.role.Card;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,9 +10,9 @@ public enum Camp {
     WOLF, VILLAGER, TANNER;
 
     public static boolean isWolfCamp(Card card){
-        return card == Card.WEREWOLF_1
-                || card == Card.WEREWOLF_2
-                || card == Card.MINION;
+        return card == CardFactory.WOLF_0
+                || card == CardFactory.WOLF_1
+                || card == CardFactory.MINION;
     }
 
     public static Camp getCamp(Card card){
@@ -28,12 +30,12 @@ public enum Camp {
     }
 
     public static boolean isTannerCamp(Card card){
-        return card == Card.TANNER;
+        return card == CardFactory.TANNER;
     }
 
     public static Set<Card> getCards(Camp camp){
         Set<Card> result = new HashSet();
-        for(Card card : Card.values()){
+        for(Card card : CardFactory.CARDS){
             switch(camp){
                 case WOLF: if(isWolfCamp(card)) result.add(card); break;
                 case TANNER: if(isTannerCamp(card)) result.add(card); break;

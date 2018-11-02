@@ -1,5 +1,7 @@
 package com.xskr.onw.wxs.core;
 
+import com.xskr.onw.wxs.core.role.Card;
+
 import java.util.Set;
 
 //投票统计结果
@@ -25,7 +27,7 @@ public class VoteStat {
     }
 
     public boolean onlyVotedTanner() {
-        return votedPlayer.size() == 1 && votedPlayer.iterator().next().getCard() == Card.TANNER;
+        return votedPlayer.size() == 1 && votedPlayer.iterator().next().getCard() == CardFactory.TANNER;
     }
 
     public boolean voted(Card card){
