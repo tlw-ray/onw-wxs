@@ -1,4 +1,5 @@
 /* pages/room/room.wxss */
+@import'../common.wxss';
 page{
   position: fixed;
   height: 100%;

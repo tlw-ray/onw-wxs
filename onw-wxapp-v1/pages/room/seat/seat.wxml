@@ -8,6 +8,6 @@
       <image src="{{playerIcon}}" mode="cover"></image>
     </view>
   </view>
-  <text wx:if="{{playerReady}}">®{{playerName}}</text>
-  <text wx:else class="playerNameText">{{playerName}}</text>
+  <text wx:if="{{playerReady}}" class="playerNameText nowarp">®{{playerName}}</text>
+  <text wx:else class="playerNameText nowarp">{{playerName}}</text>
 </view>

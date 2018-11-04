@@ -2,8 +2,8 @@ package com.xskr.onw.wxs.stomp;
 
 import com.xskr.onw.wxs.core.ClientAction;
 import com.xskr.onw.wxs.core.Hall;
+import com.xskr.onw.wxs.core.OnwMessage;
 import com.xskr.onw.wxs.core.Room;
-import com.xskr.onw.wxs.core.XskrMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -53,7 +52,7 @@ public class RoomController {
         String openID = getOpenID(headers);
         int roomID = getRoomID(headers);
         Room room = hall.getRoom(roomID);
-        XskrMessage xskrMessage = new XskrMessage("Room information.", ClientAction.ROOM_CHANGED, room);
+        OnwMessage xskrMessage = new OnwMessage("Room information.", ClientAction.ROOM_CHANGED, room);
         simpMessagingTemplate.convertAndSendToUser(openID, "/message", xskrMessage);
     }
 

@@ -1,0 +1,15 @@
+nowarp {
+  overflow: hidden;
+  white-space: nowrap;
+  word-wrap: normal;
+  word-break: keep-all;
+  text-overflow: ellipsis;/*Not working in FF*/
+}
+
+warp {
+  overflow: hidden;
+  white-space: normal;
+  word-warp: break-word;
+  word-break: break-all;/*Only work in IE*/
+  text-overflow: ellipsis;/*Not working in FF*/
+}

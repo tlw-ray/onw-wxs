@@ -20,7 +20,9 @@ Page({
     //消息框标题
     messageTitleText: '消息 ▼',
     //消息内容隐藏
-    messageContentTextHidden: 'visible',
+    messageContentViewHidden: 'visible',
+    //openid
+    openid: undefined
   },
 
   /**
@@ -28,6 +30,9 @@ Page({
    */
   onLoad: function (options) {
     var roomID = wx.getStorageSync('roomID');
+    this.setData({
+      openid: wx.getStorageSync('openid')
+    });
     console.log("ROOM_ID: " + roomID);
     //设定本页面中标题栏显示房间号
     wx.setNavigationBarTitle({
@@ -40,7 +45,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    
+
   },
 
   /**
@@ -116,12 +121,12 @@ Page({
     var roleCardIDString = event.target.id.substring('roleCard_'.length);
     var roleCardID = new Number(roleCardIDString);
     console.log("click: " + roleCardID);
-    this.data.stompClient.send('/onw/room/roleCard', { 'openid': openid, 'roomID': roomID, 'roleCardID': roleCardID }, "Click role card.");
+    this.data.stompClient.send('/onw/room/roleCard', { 'openid': openid, 'roomID': roomID, 'roleCardID': roleCardID }, "Click card card.");
   },
   bindtapReady: function(){
     var openid = wx.getStorageSync('openid');
     var roomID = wx.getStorageSync('roomID');
-    
+
     this.data.stompClient.send('/onw/room/ready', { 'openid': openid, 'roomID': roomID }, "Request ready.");
   },
   bindtapDesktopCard: function(event){
@@ -137,12 +142,12 @@ Page({
     if (this.data.messageTitleText == '消息 ▼'){
       this.setData({
         messageTitleText: '消息 ◀',
-        messageContentTextHidden: 'hidden'
+        messageContentViewHidden: 'hidden'
       })
     } else{
       this.setData({
         messageTitleText: '消息 ▼',
-        messageContentTextHidden: 'visible'
+        messageContentViewHidden: 'visible'
       })
     }
   },
@@ -187,7 +192,7 @@ Page({
     wx.connectSocket({
       url: getApp().globalData.wssAPI
     })
-    
+
     wx.onSocketOpen(function (res) {
       that.socketOpen = true
       console.log(res);
@@ -217,7 +222,7 @@ Page({
       Stomp.clearInterval = function () { }
       that.data.stompClient = Stomp.over(ws);
 
-      that.data.stompClient.connect({}, function (sessionId) { 
+      that.data.stompClient.connect({}, function (sessionId) {
 
         let openid = wx.getStorageSync('openid');
         let roomID = wx.getStorageSync('roomID');
@@ -234,10 +239,10 @@ Page({
               room: xskrMessage.data
             });
           }
-        }); 
-        // that.data.stompClient.send('/messageMapping0', { 'openid': openid }, "I'm topic!");  
+        });
+        // that.data.stompClient.send('/messageMapping0', { 'openid': openid }, "I'm topic!");
 
-        // subscribe queue 
+        // subscribe queue
         that.data.subscribedMessage = that.data.stompClient.subscribe('/user/' + openid + '/message', function (content, headers) {
           console.log('From:::::::::: /user/' + openid + '/message:', content);
           var xskrMessage = JSON.parse(content.body);

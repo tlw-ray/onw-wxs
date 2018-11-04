@@ -1,4 +1,4 @@
-package com.xskr.onw.wxs.core.role;
+package com.xskr.onw.wxs.core.card;
 
 public class Insomniac extends Card {
     @Override

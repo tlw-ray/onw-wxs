@@ -49,9 +49,16 @@
       <view>
         <text id="messageTitleText" bindtap="bindtapMessageTitleText">{{messageTitleText}}</text>
       </view>
-      <view>
-        <text id="messageContentText" style="visibility: {{messageContentTextHidden}}">1232</text>
+      <view wx:for="{{room.seats}}" wx:key="openid" wx:for-item="seat" style="visibility: {{messageContentViewHidden}}">
+        <view wx:if="{{seat.openid == openid}}">
+          {{seat.information.length}}
+          <view wx:for="{{seat.information}}">
+            {{item.message}}
+          </view>
+        </view>
+        <!-- {{item}} -->
       </view>
+      
     </view>
   </view>
   <view class="seatsView">

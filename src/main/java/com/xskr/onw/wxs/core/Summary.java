@@ -1,6 +1,6 @@
 package com.xskr.onw.wxs.core;
 
-import com.xskr.onw.wxs.core.role.Card;
+import com.xskr.onw.wxs.core.card.Card;
 
 import java.util.ArrayList;
 import java.util.List;

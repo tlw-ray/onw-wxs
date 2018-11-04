@@ -1,6 +1,6 @@
 package com.xskr.onw.wxs.core;
 
-import com.xskr.onw.wxs.core.role.*;
+import com.xskr.onw.wxs.core.card.*;
 
 public class CardFactory {
 
@@ -21,12 +21,14 @@ public class CardFactory {
     public static final Villager VILLAGER_2 = new Villager(2);
     public static final Tanner TANNER = new Tanner();
 
+    //注意这里顺序要和界面上一样
     public static final Card[] CARDS = new Card[]{
         DOPPELGANGER,
         WOLF_0, WOLF_1, MINION,
+        SEER, ROBBER, TROUBLEMAKER, INSOMNIAC,
+        HUNTER, DRUNK,
         MASON_0, MASON_1,
-        SEER, ROBBER, TROUBLEMAKER, DRUNK, INSOMNIAC,
-        HUNTER, VILLAGER_0, VILLAGER_1, VILLAGER_2,
+        VILLAGER_0, VILLAGER_1, VILLAGER_2,
         TANNER
     };
 

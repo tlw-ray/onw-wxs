@@ -14,7 +14,7 @@ Component({
     },
     playerName: {
       type: String,
-      value: 'VINCENT'
+      value: undefined
     },
     playerIcon: {
       type: String,
