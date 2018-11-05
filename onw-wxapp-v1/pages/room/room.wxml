@@ -52,11 +52,10 @@
       <view wx:for="{{room.seats}}" wx:key="openid" wx:for-item="seat" style="visibility: {{messageContentViewHidden}}">
         <view wx:if="{{seat.openid == openid}}">
           {{seat.information.length}}
-          <view wx:for="{{seat.information}}">
+          <view wx:for="{{seat.information}}" wx:key="message" style="font-size:small;white-space:pre-line">
             {{item.message}}
           </view>
         </view>
-        <!-- {{item}} -->
       </view>
       
     </view>
