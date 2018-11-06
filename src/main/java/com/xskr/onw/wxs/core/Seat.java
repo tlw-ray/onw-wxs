@@ -33,8 +33,11 @@ public class Seat{
 	private int votedCount;
 	//该座位是否可用
 	private boolean enable = true;
+    //本局是否胜利
+    private Boolean outcome = null;
 	//该玩家的关键信息，供断线重连时提供
 	private List<OnwMessage> information = new ArrayList();
+
 
 	//一局游戏结束重置玩家状态
 	public void reset(){
@@ -42,6 +45,8 @@ public class Seat{
 	    card = null;
 	    ready = false;
 	    voteSeat = null;
+	    votedCount = 0;
+	    outcome = null;
 	    information.clear();
     }
 	public String getOpenid() {
@@ -126,6 +131,14 @@ public class Seat{
 
     public Set<Role> getInitializeRole() {
         return initializeRole;
+    }
+
+    public Boolean getOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(Boolean outcome) {
+        this.outcome = outcome;
     }
 
     @Override

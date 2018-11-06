@@ -23,7 +23,7 @@
 </view>
 <view id="desktopView">
   <view class="seatsView">
-    <seat id="seat_00" bindtap="bindtapSeat" seatNumber="1" guessCard="{{room.seats[0].card}}" playerName="{{room.openidUserMap[room.seats[0].openid]['nickName']}}" playerIcon="{{room.openidUserMap[room.seats[0].openid]['avatarUrl']}}" playerReady="{{room.seats[0].ready}}" class="grayBorder lightCard {{room.seats[0].enable ? '' : 'seatDisable'}}"></seat>
+    <seat id="seat_00" bindtap="bindtapSeat" seatNumber="1" playerName="{{room.openidUserMap[room.seats[0].openid]['nickName']}}" playerIcon="{{room.openidUserMap[room.seats[0].openid]['avatarUrl']}}" seat="{{room.seats[0]}}" class="grayBorder lightCard {{room.seats[0].enable ? '' : 'seatDisable'}}"></seat>
     <seat id="seat_01" bindtap="bindtapSeat" seatNumber="2" guessCard="{{room.seats[1].card}}" playerName="{{room.openidUserMap[room.seats[1].openid]['nickName']}}" playerIcon="{{room.openidUserMap[room.seats[1].openid]['avatarUrl']}}" playerReady="{{room.seats[1].ready}}" class="grayBorder lightCard {{room.seats[1].enable ? '' : 'seatDisable'}}"></seat>
     <seat id="seat_02" bindtap="bindtapSeat" seatNumber="3" guessCard="{{room.seats[2].card}}" playerName="{{room.openidUserMap[room.seats[2].openid]['nickName']}}" playerIcon="{{room.openidUserMap[room.seats[2].openid]['avatarUrl']}}" playerReady="{{room.seats[2].ready}}" class="grayBorder lightCard {{room.seats[2].enable ? '' : 'seatDisable'}}"></seat>
     <seat id="seat_03" bindtap="bindtapSeat" seatNumber="4" guessCard="{{room.seats[3].card}}" playerName="{{room.openidUserMap[room.seats[3].openid]['nickName']}}" playerIcon="{{room.openidUserMap[room.seats[3].openid]['avatarUrl']}}" playerReady="{{room.seats[3].ready}}" class="grayBorder lightCard {{room.seats[3].enable ? '' : 'seatDisable'}}"></seat>
@@ -32,32 +32,38 @@
   </view>
   <view id="centerView">
     <view id="desktopCardsView">
-      <view id="desktopCard_1" bindtap="bindtapDesktopCard" class="desktopCardView grayBorder lightCard">
+      <view id="desktopCard_0" bindtap="bindtapDesktopCard" class="desktopCardView grayBorder lightCard">
         <text class="desktopCardNumberText">I</text>
-        <text class="desktopCardText">?</text>
+        <text class="desktopCardText">{{room.desktopCards[0].displayName}}</text>
+      </view>
+      <view id="desktopCard_1" bindtap="bindtapDesktopCard" class="desktopCardView grayBorder lightCard">
+        <text class="desktopCardNumberText">II</text>
+        <text class="desktopCardText">{{room.desktopCards[1].displayName}}</text>
       </view>
       <view id="desktopCard_2" bindtap="bindtapDesktopCard" class="desktopCardView grayBorder lightCard">
-        <text class="desktopCardNumberText">II</text>
-        <text class="desktopCardText">?</text>
-      </view>
-      <view id="desktopCard_3" bindtap="bindtapDesktopCard" class="desktopCardView grayBorder lightCard">
         <text class="desktopCardNumberText">III</text>
-        <text class="desktopCardText">?</text>
+        <text class="desktopCardText">{{room.desktopCards[2].displayName}}</text>
       </view>
     </view>
     <view id="messageView" class="greenBorder">
       <view>
         <text id="messageTitleText" bindtap="bindtapMessageTitleText">{{messageTitleText}}</text>
       </view>
-      <view wx:for="{{room.seats}}" wx:key="openid" wx:for-item="seat" style="visibility: {{messageContentViewHidden}}">
-        <view wx:if="{{seat.openid == openid}}">
-          {{seat.information.length}}
-          <view wx:for="{{seat.information}}" wx:key="message" style="font-size:small;white-space:pre-line">
-            {{item.message}}
+      <view id="messageContentView" style="visibility: {{messageContentViewVisibility}}">
+        <view id="operateTabView" wx:for="{{room.seats}}" wx:key="openid" wx:for-item="seat">
+          <view wx:if="{{seat.openid == openid}}">
+            <view wx:for="{{seat.information}}" wx:key="message" style="font-size: xx-small;white-space:pre-line">
+              {{item.message}}
+            </view>
+            <view wx:if="{{seat.information[seat.information.length-1].action == 'GAME_FINISH'}}" style="font-size: xx-small">
+              <view>-------------复盘------------</view>
+              <view wx:for="{{room.operations}}" wx:key="index" wx:for-item="operation" style="font-size: xx-small">
+                {{index}} --> {{operation}}
+              </view> 
+            </view>
           </view>
         </view>
       </view>
-      
     </view>
   </view>
   <view class="seatsView">
@@ -70,7 +76,7 @@
   </view>
 </view>
 <view id="buttonView">
-  <button id="exitButton" bindtap='bindtapExit'>退出房间</button>
+  <button id="voteButton" bindtap='bindtapExit'>投票</button>
   <button id="aboutButton">游戏说明</button>
-  <button id="readyButton" bindtap='bindtapReady'>准备开始</button>
+  <button id="readyButton" bindtap='bindtapReady'>准备</button>
 </view>

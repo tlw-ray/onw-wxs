@@ -52,8 +52,10 @@ App({
   globalData: {
     userInfo: null,
     stompClient: undefined,
-    httpAPI: 'https://192.168.0.106:8443/onw',
-    wssAPI: 'wss://192.168.0.106:8443/onw/endpoint',
+    httpAPI: 'https://xskr.top/onw',
+    wssAPI: 'wss://xskr.top/onw/endpoint',
+    // httpAPI: 'https://192.168.0.106:8443/onw',
+    // wssAPI: 'wss://192.168.0.106:8443/onw/endpoint',
   }
   // initSocket: function () {
   //   var that = this;

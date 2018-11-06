@@ -8,10 +8,6 @@ Component({
       type: String,
       value: '01'
     },
-    guessCard: {
-      type: String,
-      value: '?'
-    },
     playerName: {
       type: String,
       value: undefined
@@ -20,13 +16,9 @@ Component({
       type: String,
       value: undefined
     },
-    playerReady:{
-      type: Boolean,
-      value: false
-    },
-    seatEnabled:{
-      type: Boolean,
-      value: true
+    seat: {
+      type: Object,
+      value: undefined
     }
     //TODO 需要不可点选、可选、被选择等若干状态
   },

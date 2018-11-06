@@ -20,7 +20,10 @@ Page({
     //消息框标题
     messageTitleText: '消息 ▼',
     //消息内容隐藏
-    messageContentViewHidden: 'visible',
+    messageContentViewVisibility: 'visible',
+    operateTabViewVisibility: 'visible',
+    summaryTabViewVisibility: 'hidden',
+    detailTabViewVisibility: 'hidden',
     //openid
     openid: undefined
   },
@@ -132,22 +135,24 @@ Page({
   bindtapDesktopCard: function(event){
     var openid = wx.getStorageSync('openid');
     var roomID = wx.getStorageSync('roomID');
-    var desktopCardIDString = event.target.id.substring('desktopCard_'.length);
+    var desktopCardIDString = event.currentTarget.id.substring('desktopCard_'.length);
     var desktopCardID = new Number(desktopCardIDString);
+    console.log(event);
     console.log("click desktop card: " + desktopCardID);
     this.data.stompClient.send('/onw/room/desktopCard', { 'openid': openid, 'roomID': roomID, 'desktopCardID': desktopCardID }, "Click desktop card.");
   },
   bindtapMessageTitleText: function(event){
     var messageTitleText = event.target.id;
+    console.log(messageTitleText)
     if (this.data.messageTitleText == '消息 ▼'){
       this.setData({
         messageTitleText: '消息 ◀',
-        messageContentViewHidden: 'hidden'
+        messageContentViewVisibility: 'hidden'
       })
     } else{
       this.setData({
         messageTitleText: '消息 ▼',
-        messageContentViewHidden: 'visible'
+        messageContentViewVisibility: 'visible'
       })
     }
   },

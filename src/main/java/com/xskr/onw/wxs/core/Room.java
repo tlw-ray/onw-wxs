@@ -37,10 +37,8 @@ public class Room {
     // 房主用户名
     private Map<String, WxUser> openidUserMap = new HashMap();
 
-    // 本房间的某一场比赛结局
-    private List<Summary> summaries;
     // 本房间一场比赛的操作记录
-    private List<Object> operations;
+    private List<Object> operations = new ArrayList();
 
     // 玩家夜间操作
     private Integer singleWolfCheckDesktopCard;
@@ -120,16 +118,16 @@ public class Room {
                 oldUserSeat.setOpenid(userName);
                 //告知所有玩家xxx回来了
                 String message = String.format("%s回来了", userName);
-                OnwMessage xskrMessage = new OnwMessage(message, ClientAction.ROOM_CHANGED, this);
-                sendMessage(xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(message, ClientAction.ROOM_CHANGED, this);
+                sendMessage(onwMessage);
                 //告知自己接下来该做的操作
-                OnwMessage reconnectXskrMessage = new OnwMessage(null, ClientAction.RECONNECT, this);
-                sendMessage(userName, reconnectXskrMessage);
+                OnwMessage reconnectonwMessage = new OnwMessage(null, ClientAction.RECONNECT, this);
+                sendMessage(userName, reconnectonwMessage);
             }else{
                 //加入observer
                 observers.add(userName);
-                OnwMessage xskrMessage = new OnwMessage(null, ClientAction.ROOM_CHANGED, this);
-                sendMessage(userName, xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(null, ClientAction.ROOM_CHANGED, this);
+                sendMessage(userName, onwMessage);
             }
         }
     }
@@ -155,7 +153,6 @@ public class Room {
             }else{
                 String message = String.format("%s号房间内不存在玩家%s.", id, userName);
                 logger.error(message);
-//                throw new RuntimeException(message);
             }
         }
         OnwMessage roomChangedMessage = new OnwMessage(null, ClientAction.LEAVE_ROOM, this);
@@ -172,14 +169,13 @@ public class Room {
         if(scene == Scene.ACTIVATE || scene == Scene.VOTE) {
             //如果已经开始或正在投票则不可改变ready状态
         }else if(scene == Scene.PREPARE){
-//            logger.debug("switchReady(userName = {}, pickReady = {})", openid, ready);
             Seat seat = getSeatByPlayerName(openid);
             if(seat != null) {
                 //玩家准备状态改变
                 boolean ready = !seat.isReady();
                 seat.setReady(ready);
-                OnwMessage xskrMessage = new OnwMessage("Player click ready.", ClientAction.ROOM_CHANGED, this);
-                sendMessage(xskrMessage);
+                OnwMessage onwMessage = new OnwMessage("Player click ready.", ClientAction.ROOM_CHANGED, this);
+                sendMessage(onwMessage);
                 if(ready) {
                     //检查是否能够触发游戏开始事件
                     //如果玩家数量达到座位数量，且玩家都是ready状态则触发新游戏事件
@@ -284,13 +280,13 @@ public class Room {
             Seat playerSeat = seats.get(i);
             if(playerSeat.getOpenid() == null){
                 String message = String.format("%s号座位没有玩家，游戏无法开始。", i);
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                sendMessage(xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                sendMessage(onwMessage);
                 return;
             }else if(!playerSeat.isReady()){
                 String message = String.format("%s号座位玩家未进入准备状态，游戏无法开始。", i);
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                sendMessage(xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                sendMessage(onwMessage);
                 return;
             }else{
                 //do nothing
@@ -304,13 +300,7 @@ public class Room {
         for(int i=0;i<getAvailableSeatCount();i++){
             seats.get(i).reset();
         }
-        this.summaries = null;
-        this.operations = null;
-//        OnwMessage xskrMessage = new OnwMessage("新一局开始了！", ClientAction.NEW_GAME, null);
-//        keepTopicMessage(xskrMessage);
-//        //将信息发至客户端
-//        OnwMessage roomMessage = new OnwMessage(null, ClientAction.ROOM_CHANGED, this);
-//        sendMessage(roomMessage);
+        this.operations.clear();
 
         Deck deck = new Deck(getPickedCards().toArray(new Card[0]));
 
@@ -323,11 +313,6 @@ public class Room {
         troublemakerExchangePlayerSeat1 = null;
         troublemakerExchangePlayerSeat2 = null;
         drunkExchangeDesktopCard = null;
-//        //清空上一局所有玩家的身份与投票状态
-//        for(int i=0;i<getAvailableSeatCount();i++){
-//            Seat playerSeat = seats.get(i);
-//            playerSeat.setCard(null);
-//        }
 
         //洗牌
         deck.shuffle(200);
@@ -356,18 +341,17 @@ public class Room {
         Seat drunkSeat = getSeatByInitializeCard(CardFactory.DRUNK);
 
         //发牌结束后根据身份为每个玩家发送行动提示信息
-        Map<Seat, OnwMessage> playerXskrMessageMap = new HashMap();
         boolean directVote = true;
         for(int i=0;i<getAvailableSeatCount();i++){
             Seat playerSeat = seats.get(i);
             String message;
             ClientAction clientAction = null;
             if(playerSeat == singleWolfSeat){
-                message = String.format("请点选牌1、牌2、牌3中的一张，来查看桌面牌垛中对应的卡牌。");
+                message = String.format("请点选牌1、牌2、牌3中的一张。");
                 clientAction = ClientAction.SINGLE_WOLF_ACTION;
                 directVote = false;
             }else if (playerSeat == seerSeat) {
-                message = "请点选牌1、牌2、牌3中的任意两个来查看的桌面牌垛中对应的卡牌，或者点选一位玩家查看其身份。";
+                message = "请点选牌1、牌2、牌3中的任意两个，或者一位玩家。";
                 clientAction = ClientAction.SEER_ACTION;
                 directVote = false;
             }else if(playerSeat == robberSeat){
@@ -389,20 +373,13 @@ public class Room {
             String firstMessage = String.format("初始身份:%s。\n" + message, playerSeat.getCard().getDisplayName());
             OnwMessage onwMessage = new OnwMessage(firstMessage, clientAction, null);
             keepKeyMessage(playerSeat, onwMessage);
-//            playerXskrMessageMap.put(playerSeat, xskrMessage);
         }
         //向玩家发送身份和操作提示信息
         OnwMessage onwMessage = new OnwMessage("", ClientAction.ROOM_CHANGED, this);
         sendMessage(onwMessage);
-//        for(Map.Entry<Seat, OnwMessage> entry:playerXskrMessageMap.entrySet()){
-//            Seat seat = entry.getKey();
-//            OnwMessage xskrMessage1 = entry.getValue();
-//            keepKeyMessage(seat, xskrMessage1);
-//            sendMessage(seat.getOpenid(), xskrMessage1);
-//        }
         if(directVote){
             //没有任何玩家需要行动，直接进入投票阶段
-            Random random = new Random();
+//            Random random = new Random();
             //随机等待约10秒，至少3秒，模拟有人在行动的情况
 //            long span = 1000 + random.nextInt(1000);
 //            try {
@@ -417,7 +394,6 @@ public class Room {
                 }
             };
             //这里等待后触发，多线程是否有问题
-            //TODO 无论是否可以直接进入投票阶段，都应至少等待10秒钟
             Timer timer = new Timer();
             timer.schedule(timerTask, 1000);
         }else{
@@ -437,7 +413,7 @@ public class Room {
         if(getSingleWolfSeat() != null){
             //如果存在孤狼的角色
             if(singleWolfCheckDesktopCard == null){
-                //如果孤狼没有指定要看的牌垛中的一张牌
+                //如果孤狼没有指定要看的桌面上的一张牌
                 logger.debug("singleWolf not work!");
                 return false;
             }
@@ -448,7 +424,7 @@ public class Room {
             //如果存在预言家角色
             if((seerCheckDesktopCard1 == null || seerCheckDesktopCard2 == null) &&
                     seerCheckPlayerSeat == null){
-                //如果预言家既没有指定要看牌垛中的那两张牌，也没有指定要验证的玩家的身份
+                //如果预言家既没有指定要看桌面上的那两张牌，也没有指定要验证的玩家的身份
                 logger.debug("seer not work!");
                 return false;
             }
@@ -520,20 +496,25 @@ public class Room {
             //狼的回合
             if(singleWolfSeat != null){
                 //场面上是一头孤狼
-                OnwMessage message = new OnwMessage(String.format("牌垛中第%s张牌是: %s", singleWolfCheckDesktopCard, desktopCards.get(singleWolfCheckDesktopCard).getDisplayName()), null, null);
-                keepKeyMessage(singleWolfSeat, message);
-//                sendMessage(singleWolfSeat.getOpenid(), message);
+                String message = String.format("查看桌面上第%s张牌是: %s", singleWolfCheckDesktopCard + 1, desktopCards.get(singleWolfCheckDesktopCard).getDisplayName());
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(singleWolfSeat, onwMessage);
+                String operation = "[孤狼]: " + getNickName(singleWolfSeat) + message;
+                operations.add(operation);
             }else if(wolf1Seat != null && wolf2Seat != null){
                 //有两个狼玩家
-                String messageTemplate = "看到狼人伙伴%s号玩家'%s'，同时他也看到了你。";
-                OnwMessage wolf1Message = new OnwMessage(String.format(messageTemplate, getLocation(wolf2Seat), wolf2Seat.getOpenid()), null, null);
-                OnwMessage wolf2Message = new OnwMessage(String.format(messageTemplate, getLocation(wolf1Seat), wolf1Seat.getOpenid()), null, null);
-                keepKeyMessage(wolf1Seat, wolf1Message);
-                keepKeyMessage(wolf2Seat, wolf2Message);
-//                sendMessage(wolf1Seat.getOpenid(), wolf1Message);
-//                sendMessage(wolf2Seat.getOpenid(), wolf2Message);
+                //TODO 根据座位号排序
+                String message = String.format("狼人是%s号玩家%s和%s号玩家%s.",
+                        getLocation(wolf1Seat), getNickName(wolf1Seat),
+                        getLocation(wolf2Seat), getNickName(wolf2Seat));
+                OnwMessage wolfMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(wolf1Seat, wolfMessage);
+                keepKeyMessage(wolf2Seat, wolfMessage);
+                String operation = String.format("[狼人]: 狼人是%s和%s", getNickName(wolf1Seat), getNickName(wolf2Seat));
+                operations.add(operation);
             }else if(wolf1Seat == null && wolf2Seat == null){
                 //场面上没有狼，不需要给任何狼发消息
+                operations.add("[狼人]: 场上无狼");
             }
 
             // 爪牙的回合
@@ -541,40 +522,45 @@ public class Room {
                 String message;
                 if(wolf1Seat != null && wolf2Seat != null){
                     //双狼
-                    message = String.format("看到两头狼，%s号玩家'%s'和%s号玩家'%s'。",
-                            getLocation(wolf1Seat), wolf1Seat.getOpenid(), getLocation(wolf2Seat), wolf2Seat.getOpenid());
+                    message = String.format("看到两头狼，%s号玩家%s和%s号玩家%s。", getLocation(wolf1Seat),
+                            getNickName(wolf1Seat), getLocation(wolf2Seat), getNickName(wolf2Seat));
                 }else if(singleWolfSeat != null){
                     //孤狼
-                    message = String.format("看到了一头孤狼，%s号玩家'%s'。",
-                            getLocation(singleWolfSeat), singleWolfSeat.getOpenid());
+                    message = String.format("看到了一头孤狼，%s号玩家%s。",
+                            getLocation(singleWolfSeat), getNickName(singleWolfSeat));
                 }else{
                     //无狼
                     message = "场面上没有狼。";
                 }
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                keepKeyMessage(minionSeat, xskrMessage);
-//                sendMessage(minionSeat.getOpenid(), xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(minionSeat, onwMessage);
+                String operation = String.format("[爪牙]: %s查看狼", getNickName(minionSeat));
+                operations.add(operation);
             }
 
             // 守夜人的回合
             if(meson1Seat == null && meson2Seat != null){
                 //单守夜
-                OnwMessage xskrMessage = new OnwMessage("单守夜人没有同伴。", null, null);
-                keepKeyMessage(meson2Seat, xskrMessage);
-//                sendMessage(meson2Seat.getOpenid(), xskrMessage);
+                OnwMessage onwMessage = new OnwMessage("单守夜人没有同伴。", null, null);
+                keepKeyMessage(meson2Seat, onwMessage);
+                String operation = String.format("[守夜人]: %s没有同伴", getNickName(meson2Seat));
+                operations.add(operation);
             }else if(meson1Seat != null && meson2Seat == null){
-                OnwMessage xskrMessage = new OnwMessage("单守夜人没有同伴。", null, null);
-                keepKeyMessage(meson1Seat, xskrMessage);
-//                sendMessage(meson1Seat.getOpenid(), xskrMessage);
+                OnwMessage onwMessage = new OnwMessage("单守夜人没有同伴。", null, null);
+                keepKeyMessage(meson1Seat, onwMessage);
+                String operation = String.format("[守夜人]: %s没有同伴", getNickName(meson1Seat));
+                operations.add(operation);
             }else if(meson1Seat != null && meson2Seat != null){
                 //双守夜
-                String messageTemplate = "看到另一位守夜人，%s号玩家'%s'。";
-                OnwMessage meson1Message = new OnwMessage(String.format(messageTemplate, getLocation(meson2Seat), meson2Seat.getOpenid()), null, null);
-                OnwMessage meson2Message = new OnwMessage(String.format(messageTemplate, getLocation(meson1Seat), meson1Seat.getOpenid()), null, null);
+                String messageTemplate = "看到另一位守夜人，%s号玩家%s。";
+                OnwMessage meson1Message = new OnwMessage(String.format(messageTemplate, getLocation(meson2Seat),
+                        getNickName(meson2Seat)), null, null);
+                OnwMessage meson2Message = new OnwMessage(String.format(messageTemplate, getLocation(meson1Seat),
+                        getNickName(meson1Seat)), null, null);
                 keepKeyMessage(meson1Seat, meson1Message);
                 keepKeyMessage(meson2Seat, meson2Message);
-//                sendMessage(meson1Seat.getOpenid(), meson1Message);
-//                sendMessage(meson2Seat.getOpenid(), meson2Message);
+                String operation = String.format("[守夜人]: %s和%s互认", getNickName(meson1Seat), getNickName(meson2Seat));
+                operations.add(operation);
             }else{
                 //无守夜
             }
@@ -585,18 +571,20 @@ public class Room {
                 String message = "";
                 if(seerCheckPlayerSeat != null){
                     Seat player = seats.get(seerCheckPlayerSeat);
-                    message = String.format("查看%s号玩家'%s'的身份是: %s",
-                            getLocation(player), player.getOpenid(), player.getCard().getDisplayName());
+                    message = String.format("查看%s号玩家%s的身份是: %s", getLocation(player),
+                            openidUserMap.get(player.getOpenid()).getNickName(), player.getCard().getDisplayName());
                 }else{
                     Card card1 = desktopCards.get(seerCheckDesktopCard1);
                     Card card2 = desktopCards.get(seerCheckDesktopCard2);
                     String card1Name = card1.getDisplayName();
                     String card2Name = card2.getDisplayName();
-                    message = String.format("翻开桌上第%s和%s张卡牌，看到了%s和%s", seerCheckDesktopCard1, seerCheckDesktopCard2, card1Name, card2Name);
+                    message = String.format("翻开桌上第%s和%s张卡牌，看到了%s和%s",
+                            seerCheckDesktopCard1, seerCheckDesktopCard2, card1Name, card2Name);
                 }
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                keepKeyMessage(seerSeat, xskrMessage);
-//                sendMessage(seerSeat.getOpenid(), xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(seerSeat, onwMessage);
+                String operation = String.format("[预言家]: %s" + message, getNickName(seerSeat));
+                operations.add(operation);
             }
 
             if(robberSeat != null){
@@ -604,11 +592,13 @@ public class Room {
                 Card swapCard = player.getCard();
                 player.setCard(robberSeat.getCard());
                 robberSeat.setCard(swapCard);
-                String message = String.format("交换了%s号玩家'%s'的身份牌%s。",
-                        getLocation(player), player.getOpenid(), swapCard.getDisplayName());
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                keepKeyMessage(robberSeat, xskrMessage);
-//                sendMessage(robberSeat.getOpenid(), xskrMessage);
+                String message = String.format("交换了%s号玩家%s的身份牌%s。", getLocation(player),
+                        getNickName(player), swapCard.getDisplayName());
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(robberSeat, onwMessage);
+                String operation = String.format("[强盗]: %s交换了%s的身份牌%s",
+                        getNickName(robberSeat), getNickName(player), swapCard.getDisplayName());
+                operations.add(operation);
             }
             if(troublemakerSeat != null){
                 Seat player1 = seats.get(troublemakerExchangePlayerSeat1);
@@ -616,45 +606,55 @@ public class Room {
                 Card swapCard = player1.getCard();
                 player1.setCard(player2.getCard());
                 player2.setCard(swapCard);
-                String message = String.format("交换了%s号玩家'%s'和%s号玩家'%s'的身份牌。",
-                        getLocation(player1), player1.getOpenid(), getLocation(player2), player2.getOpenid());
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                keepKeyMessage(troublemakerSeat, xskrMessage);
-//                sendMessage(troublemakerSeat.getOpenid(), xskrMessage);
+                String message = String.format("交换了%s号玩家%s和%s号玩家%s的身份牌。",
+                        getLocation(player1), getNickName(player1), getLocation(player2), getNickName(player2));
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(troublemakerSeat, onwMessage);
+                String operation = String.format("[捣蛋鬼]: %s交换了%s和%s的身份",
+                        getNickName(troublemakerSeat), getNickName(player1), getNickName(player2));
+                operations.add(operation);
             }
             if(drunkSeat != null){
                 Card swapCard = desktopCards.get(drunkExchangeDesktopCard);
                 desktopCards.put(drunkExchangeDesktopCard, drunkSeat.getCard());
                 drunkSeat.setCard(swapCard);
-                String message = String.format("交换了牌垛里的第%s张牌。", drunkExchangeDesktopCard);
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                keepKeyMessage(drunkSeat, xskrMessage);
-//                sendMessage(drunkSeat.getOpenid(), xskrMessage);
+                String message = String.format("交换了桌面第%s张牌。", drunkExchangeDesktopCard);
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(drunkSeat, onwMessage);
+                String operation = String.format("[酒鬼]: %s交换了桌面第%s张牌%s",
+                        getNickName(drunkSeat), drunkExchangeDesktopCard + 1, swapCard.getDisplayName());
+                operations.add(operation);
             }
             if(insomniacSeat != null){
-                String message;
+                String message, operation;
                 if(insomniacSeat.getCard() == CardFactory.INSOMNIAC){
                     message = "牌没有被换过。";
+                    operation = "[失眠者]: " + getNickName(insomniacSeat) + message;
                 }else{
                     message = String.format("牌被换为%s。", insomniacSeat.getCard().getDisplayName());
+                    operation = String.format("[失眠者]: %s看到自己的牌被换为%s",
+                            getNickName(insomniacSeat), insomniacSeat.getCard().getDisplayName());
                 }
-                OnwMessage xskrMessage = new OnwMessage(message, null, null);
-                keepKeyMessage(insomniacSeat, xskrMessage);
-//                sendMessage(insomniacSeat.getOpenid(), xskrMessage);
+                OnwMessage onwMessage = new OnwMessage(message, null, null);
+                keepKeyMessage(insomniacSeat, onwMessage);
+                operations.add(operation);
             }
-            OnwMessage xskrMessage = new OnwMessage("三轮讨论后请点击投票按钮。", ClientAction.VOTE_ACTION, null);
-            keepTopicMessage(xskrMessage);
-//            sendMessage(xskrMessage);
+            OnwMessage actionMessage = new OnwMessage("三轮讨论后请点击投票按钮。", ClientAction.VOTE_ACTION, null);
+            keepTopicMessage(actionMessage);
             OnwMessage onwMessage = new OnwMessage("", ClientAction.ROOM_CHANGED, this);
             sendMessage(onwMessage);
             scene = Scene.VOTE;
         }
     }
 
-    private void keepTopicMessage(OnwMessage xskrMessage) {
+    private String getNickName(Seat seat){
+        return String.format("'%s'", openidUserMap.get(seat.getOpenid()).getNickName());
+    }
+
+    private void keepTopicMessage(OnwMessage onwMessage) {
         for(int i=0;i<getAvailableSeatCount();i++){
             Seat playerSeat = seats.get(i);
-            keepKeyMessage(playerSeat, xskrMessage);
+            keepKeyMessage(playerSeat, onwMessage);
         }
     }
 
@@ -799,15 +799,11 @@ public class Room {
 
     private void gameFinish(Set<Camp> victoryCamp) {
         //生成游戏结局
-        this.summaries = new ArrayList();
         for(int i=0;i<getAvailableSeatCount();i++){
             Seat playerSeat = seats.get(i);
             Card card = playerSeat.getCard();
-            Card initializeCard = playerSeat.getInitializeCard();
             Camp camp = Camp.getCamp(card);
-            boolean outcome = victoryCamp.contains(camp);
-            Summary summary = new Summary(camp, i, outcome, initializeCard, card, null);
-            summaries.add(summary);
+            playerSeat.setOutcome(victoryCamp.contains(camp));
         }
         //解除所有玩家的准备状态，本局游戏结束
         for(int i=0;i<getAvailableSeatCount();i++){
@@ -1030,8 +1026,8 @@ public class Room {
                     //如果已经准备了就不能再换位子了
                     if(playerSeat.isReady()){
                         //如果该玩家已经准备了不能换座位,提醒他一下
-                        OnwMessage xskrMessage = new OnwMessage("已经准备不能换座", null, null);
-                        sendMessage(playerSeat.getOpenid(), xskrMessage);
+                        OnwMessage onwMessage = new OnwMessage("已经准备不能换座", null, null);
+                        sendMessage(playerSeat.getOpenid(), onwMessage);
                     }else{
                         if(targetSeat.getOpenid() == null){
                             //换到空座位
@@ -1099,7 +1095,7 @@ public class Room {
     public int getLocation(Seat seat){
         for(int i=0;i<seats.size();i++){
             if(seat == seats.get(i)){
-                return i;
+                return i + 1;
             }
         }
         throw new RuntimeException("无法找到座位: " + seat);
@@ -1133,18 +1129,18 @@ public class Room {
         return id;
     }
 
-    private void keepKeyMessage(Seat player, OnwMessage xskrMessage){
-        player.getInformation().add(xskrMessage);
+    private void keepKeyMessage(Seat player, OnwMessage onwMessage){
+        player.getInformation().add(onwMessage);
     }
 
     public List<String> getKeyMessages(String userName){
         Seat playerSeat = getSeatByPlayerName(userName);
         if(playerSeat != null) {
-            List<OnwMessage> xskrMessages = playerSeat.getInformation();
+            List<OnwMessage> onwMessages = playerSeat.getInformation();
             List<String> messages = new ArrayList();
-            if (xskrMessages != null) {
-                for (OnwMessage xskrMessage : xskrMessages) {
-                    messages.add(xskrMessage.getMessage());
+            if (onwMessages != null) {
+                for (OnwMessage onwMessage : onwMessages) {
+                    messages.add(onwMessage.getMessage());
                 }
             }
             return messages;
@@ -1195,5 +1191,13 @@ public class Room {
             }
         }
         return cards;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public List<Object> getOperations() {
+        return operations;
     }
 }

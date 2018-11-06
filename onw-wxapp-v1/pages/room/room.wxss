@@ -182,3 +182,7 @@ seat{
 .roleCardPicked{
   background-color: darkgray
 }
+.buttonText{
+  border-style:groove;
+  margin: 5px;
+}
