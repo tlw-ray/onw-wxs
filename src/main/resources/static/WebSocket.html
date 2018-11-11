@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+</head>
+<body>
+    <script>
+        var websocket = new WebSocket("wss://127.0.0.1:8443/websocket")
+
+        websocket.onerror = function(messageEvent){
+            console.log("OnError: " + JSON.stringify(messageEvent))
+        }
+
+        websocket.onopen = function(messageEvent){
+            console.log("OnOpend: " + JSON.stringify(messageEvent));
+        }
+
+        websocket.onmessage = function(messageEvent){
+            console.log(messageEvent);
+            console.log(messageEvent.data);
+        }
+
+        websocket.onclose = function(messageEvent){
+            console.log("OnClose: " + JSON.stringify(messageEvent));
+        }
+
+        function connect(){
+            if(websocket == null){
+                websocket = new WebSocket("wss://127.0.0.1:8443/websocket");
+            }
+        }
+
+        function disconnect(){
+            if(websocket != null){
+                websocket.close();
+                websocket = null;
+            }
+        }
+
+        function sendMessage(){
+            if(websocket != null){
+                websocket.send(messageInput.value);
+            }
+        }
+
+        function sendParamMessage(){
+            if(websocket != null){
+                var obj = {
+                    'key1': 'value1',
+                    'key2': 'value2'
+                }
+                websocket.send(JSON.stringify(obj));
+            }
+        }
+    </script>
+</body>
+    <button onclick="connect()">连接</button>
+    <button onclick="disconnect()">断开</button>
+    <br>
+    <input id="messageInput" type="text" value="Hello">
+    <button onclick="sendMessage()">发送</button>
+    <button onclick="sendParamMessage()">发送参数</button>
+</html>

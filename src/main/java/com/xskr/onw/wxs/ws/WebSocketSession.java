@@ -1,27 +1,33 @@
 package com.xskr.onw.wxs.ws;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.xskr.onw.wxs.core.Hall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @ServerEndpoint(value = "/websocket")
 @Component
-public class WebSocketServer {
+public class WebSocketSession {
 
-    private static Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
+    private static Logger logger = LoggerFactory.getLogger(WebSocketSession.class);
 
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
-    //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
-    private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<WebSocketServer>();
+    //concurrent包的线程安全Set，用来存放每个客户端对应的WebSocketServer对象。
+    private static CopyOnWriteArraySet<WebSocketSession> webSocketSet = new CopyOnWriteArraySet();
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
+
+    @Autowired
+    private Hall hall;
 
     /**
      * 连接建立成功调用的方法
@@ -32,18 +38,8 @@ public class WebSocketServer {
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
         logger.info("有新连接加入！当前在线人数为" + getOnlineCount());
-        try {
-            sendMessage("连接成功");
-        } catch (IOException e) {
-            logger.error("websocket IO异常");
-        }
+        sendMessage("连接成功");
     }
-    //	//连接打开时执行
-    //	@OnOpen
-    //	public void onOpen(@PathParam("user") String user, Session session) {
-    //		currentUser = user;
-    //		System.out.println("Connected ... " + session.getId());
-    //	}
 
     /**
      * 连接关闭调用的方法
@@ -63,14 +59,9 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.info("来自客户端的消息:" + message);
-
         //群发消息
-        for (WebSocketServer item : webSocketSet) {
-            try {
-                item.sendMessage(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        for (WebSocketSession item : webSocketSet) {
+            item.sendMessage(message);
         }
     }
 
@@ -85,34 +76,20 @@ public class WebSocketServer {
     }
 
 
-    public void sendMessage(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);
+    public void sendMessage(String message){
+        System.out.println("sendMessage: " + message);
+        this.session.getAsyncRemote().sendText(message);
     }
 
-
-    /**
-     * 群发自定义消息
-     */
-    public static void sendInfo(String message) throws IOException {
-        logger.info(message);
-        for (WebSocketServer item : webSocketSet) {
-            try {
-                item.sendMessage(message);
-            } catch (IOException e) {
-                continue;
-            }
-        }
-    }
-
-    public static synchronized int getOnlineCount() {
+    public static synchronized int getOnlineCount(){
         return onlineCount;
     }
 
     public static synchronized void addOnlineCount() {
-        WebSocketServer.onlineCount++;
+        WebSocketSession.onlineCount++;
     }
 
     public static synchronized void subOnlineCount() {
-        WebSocketServer.onlineCount--;
+        WebSocketSession.onlineCount--;
     }
 }

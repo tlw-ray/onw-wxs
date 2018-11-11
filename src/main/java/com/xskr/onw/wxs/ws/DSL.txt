@@ -1,0 +1,8 @@
+CREATE [ROOM]: roomID(int)
+JOIN [ROOM] wxUser(openid(string) nickName(string) avatarURL(url)) roomID(int): fireRoomChanged(event)
+LEAVE roomID(int): fireRoomChanged(event, topic)
+INFO roomID(int): room
+PICK roleCardID(int): fireRoomChanged(event)
+PICK desktopCardID(int): fireRoomChanged(event)
+PICK seatID(int): fireRoomChanged(event)
+PICK ready(boolean): fireRoomChanged(event)

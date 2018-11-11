@@ -48,7 +48,7 @@ public class RoomController {
 
     @MessageMapping("/info")
     public void getRoomInformation(@Headers Map<String, LinkedMultiValueMap> headers, String payload){
-        showHeader(headers, payload);
+//        showHeader(headers, payload);
         String openID = getOpenID(headers);
         int roomID = getRoomID(headers);
         Room room = hall.getRoom(roomID);
@@ -128,12 +128,6 @@ public class RoomController {
     private void showHeader(@Headers Map<String, LinkedMultiValueMap> headers, Object payload){
         System.out.println("Headers: ");
         for(Map.Entry entry:headers.entrySet())System.out.println("\t" + entry);
-        System.out.println("Message: " + payload);
-    }
-
-    private void showHeader(@Headers Map<String, String> headers, String payload) {
-        System.out.println("Headers: ");
-        for (Map.Entry entry : headers.entrySet()) System.out.println("\t" + entry);
         System.out.println("Message: " + payload);
     }
 

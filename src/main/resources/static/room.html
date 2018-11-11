@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/room.js"></script>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        button {
+            width: 120px;
+            height: 40px;
+        }
+
+        #config_card_div > label{
+            margin-right: 20px
+        }
+
+        .seat{
+            width:90%; height:60px; text-align: left; background-color: gray; border-style: groove;
+        }
+    </style>
+</head>
+<body>
+<div id="create_join_div" class="container">
+    <input type="input" id="player_name_input">
+    <button id="create_room_button">创建房间</button><hr>
+    <label for="room_id_number">房间号:</label>
+    <input type="number" id="room_id_number" value="0"><br>
+    <button id="apply_join_button">加入房间</button>
+</div>
+<div id="room_div" class="container" hidden>
+    <div id="config_card_div" class="row">
+        <input type="checkbox" id="doppelganger_checkbox" value="DOPPELGANGER" disabled>
+        <label for="doppelganger_checkbox">化</label>
+        <input type="checkbox" id="werewolf_1_checkbox" value="WEREWOLF_1">
+        <label for="werewolf_1_checkbox">狼</label>
+        <input type="checkbox" id="werewolf_2_checkbox" value="WEREWOLF_2">
+        <label for="werewolf_2_checkbox">狼</label>
+        <input type="checkbox" id="minion_checkbox" value="MINION">
+        <label for="minion_checkbox">爪</label>
+        <input type="checkbox" id="seer_checkbox" value="SEER">
+        <label for="seer_checkbox">预</label>
+        <input type="checkbox" id="robber_checkbox" value="ROBBER">
+        <label for="robber_checkbox">盗</label>
+        <input type="checkbox" id="troublemaker_checkbox" value="TROUBLEMAKER">
+        <label for="troublemaker_checkbox">捣</label>
+        <input type="checkbox" id="insomniac_checkbox" value="INSOMNIAC">
+        <label for="insomniac_checkbox">失</label>
+        <input type="checkbox" id="hunter_checkbox" value="HUNTER">
+        <label for="hunter_checkbox">猎</label>
+        <input type="checkbox" id="drunk_checkbox" value="DRUNK">
+        <label for="drunk_checkbox">酒</label>
+        <input type="checkbox" id="mason_1_checkbox" value="MASON_1">
+        <label for="mason_1_checkbox">守</label>
+        <input type="checkbox" id="mason_2_checkbox" value="MASON_2">
+        <label for="mason_2_checkbox">守</label>
+        <input type="checkbox" id="villager_1_checkbox" value="VILLAGER_1">
+        <label for="villager_1_checkbox">村</label>
+        <input type="checkbox" id="villager_2_checkbox" value="VILLAGER_2">
+        <label for="villager_2_checkbox">村</label>
+        <input type="checkbox" id="villager_3_checkbox" value="VILLAGER_3">
+        <label for="villager_3_checkbox">村</label>
+        <input type="checkbox" id="tanner_checkbox" value="TANNER">
+        <label for="tanner_checkbox">厌</label>
+    </div>
+    <div id="info_div" class="row">
+        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4">
+            <input type="checkbox" id="ready_checkbox">
+            <label for="ready_checkbox">准备</label>
+        </div>
+        <div class="col-sm-2 col-lg-2 col-md-2 col-xs-2">
+            <label >房间号: <span id="room_id_span"></span></label>
+        </div>
+        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6">
+            <button id="exit_button">退出</button>
+        </div>
+    </div>
+
+    <div id="game_div" class="row">
+        <div id="seat_div" class="col-sm-4 col-lg-4 col-md-4 col-xs-4">
+            <span>1</span><div id="seat_0" location="0" class="seat">1</div>
+            <span>2</span><div id="seat_1" location="1" class="seat">2</div>
+            <span>3</span><div id="seat_2" location="2" class="seat">3</div>
+            <span>4</span><div id="seat_3" location="3" class="seat">4</div>
+            <span>5</span><div id="seat_4" location="4" class="seat">5</div>
+            <span>6</span><div id="seat_5" location="5" class="seat">6</div>
+            <span>7</span><div id="seat_6" location="6" class="seat">7</div>
+            <span>8</span><div id="seat_7" location="7" class="seat">8</div>
+            <span>9</span><div id="seat_8" location="8" class="seat">9</div>
+            <span>10</span><div id="seat_9" location="9" class="seat">10</div>
+            <span>11</span><div id="seat_10" location="10" class="seat">11</div>
+            <span>12</span><div id="seat_11" location="11" class="seat">12</div>
+        </div>
+        <div id="messages_div" class="col-sm-5 col-lg-5 col-md-5 col-xs-5"></div>
+        <div id="deck_div" class="col-sm-2 col-lg-2 col-md-2 col-xs-2">
+            <button id="deck_button_0" value="0">牌1</button>
+            <button id="deck_button_1" value="1">牌2</button>
+            <button id="deck_button_2" value="2">牌3</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

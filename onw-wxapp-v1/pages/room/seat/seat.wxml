@@ -1,20 +1,28 @@
 <!--pages/create/seat/seat.wxml-->
 <view class="seatView">
-  <view style="font-size: xx-small">
+  <view style="font-size: xx-small" wx:if="{{seat.openid!=null}}">
      <!-- class="playerNameText nowarp" -->
-    <text wx:if="{{seat.ready}}">®{{seatNumber}}.{{playerName}}</text>
-    <text wx:else>{{seatNumber}}. {{playerName}}</text>(
-    <text wx:if="{{seat.outcome}}">胜</text>
-    <text wx:else>负</text>)
+    <text wx:if="{{seat.outcome == null}}"></text>
+    <text wx:else>
+      <text wx:if="{{seat.outcome}}">(胜)</text>
+      <text wx:else>(负)</text>
+    </text>
+    <text wx:if="{{room.seats[seatNumber -1].ready}}">®{{seatNumber}}.{{playerName}}</text>
+    <text wx:else>{{seatNumber}}. {{playerName}}</text>
     <!-- 增加此view为了让文字能够垂直居中-->
     <!-- <view class="seatCardView">
       <image src="{{playerIcon}}" mode="cover"></image>
     </view> -->
-    <view>初:{{seat.initializeCard.displayName}}</view>
-    <view>终:{{seat.card.displayName}}</view>
-    <view>投: 
-    <text wx:if="{{seat.voteSeat == null}}"></text>
-    <text wx:else>{{seat.voteSeat + 1}}</text>
-    票: {{seat.votedCount}}</view>
+    <view>{{room.seats[seatNumber -1].initializeCard.displayName}}>{{room.seats[seatNumber -1].card.displayName}}</view>
+    <view>投票: 
+      <text wx:if="{{seat.voteSeat == null}}"></text>
+      <text wx:else>{{room.openidUserMap[room.seats[seat.voteSeat].openid].nickName}}</text>
+    </view>
+    <view>
+      得票: {{seat.votedCount}}
+    </view>
+  </view>
+  <view wx:else>
+    {{seatNumber}}.
   </view>
 </view>

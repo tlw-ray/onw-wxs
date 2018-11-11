@@ -57,6 +57,8 @@ public class Room {
     //用于发送WebSocket信息
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    private Date date = new Date();
+
     public Room(int id){
         logger.debug("new Room(id={})", id);
         this.id = id;
@@ -108,7 +110,7 @@ public class Room {
                 //do nothing
             }
             //告知大家新玩家进入和坐下，座位状态变化了
-            OnwMessage roomChangedMessage = new OnwMessage(null, ClientAction.ROOM_CHANGED, this);
+            OnwMessage roomChangedMessage = new OnwMessage("Seat changed...", ClientAction.ROOM_CHANGED, this);
             sendMessage(roomChangedMessage);
         }else{
             //游戏在进行中有人加入
@@ -120,13 +122,13 @@ public class Room {
                 String message = String.format("%s回来了", userName);
                 OnwMessage onwMessage = new OnwMessage(message, ClientAction.ROOM_CHANGED, this);
                 sendMessage(onwMessage);
-                //告知自己接下来该做的操作
-                OnwMessage reconnectonwMessage = new OnwMessage(null, ClientAction.RECONNECT, this);
-                sendMessage(userName, reconnectonwMessage);
+//                //告知自己接下来该做的操作
+//                OnwMessage reconnectonwMessage = new OnwMessage(null, ClientAction.RECONNECT, this);
+//                sendMessage(userName, reconnectonwMessage);
             }else{
                 //加入observer
                 observers.add(userName);
-                OnwMessage onwMessage = new OnwMessage(null, ClientAction.ROOM_CHANGED, this);
+                OnwMessage onwMessage = new OnwMessage("Join observers", ClientAction.ROOM_CHANGED, this);
                 sendMessage(userName, onwMessage);
             }
         }
@@ -155,8 +157,8 @@ public class Room {
                 logger.error(message);
             }
         }
-        OnwMessage roomChangedMessage = new OnwMessage(null, ClientAction.LEAVE_ROOM, this);
-        sendMessage(userName, roomChangedMessage);
+//        OnwMessage roomChangedMessage = new OnwMessage(null, ClientAction.LEAVE_ROOM, this);
+//        sendMessage(userName, roomChangedMessage);
     }
 
     /**
@@ -176,6 +178,7 @@ public class Room {
                 seat.setReady(ready);
                 OnwMessage onwMessage = new OnwMessage("Player click ready.", ClientAction.ROOM_CHANGED, this);
                 sendMessage(onwMessage);
+                System.out.println(JSON.toJSONString(this, true));
                 if(ready) {
                     //检查是否能够触发游戏开始事件
                     //如果玩家数量达到座位数量，且玩家都是ready状态则触发新游戏事件
@@ -275,23 +278,23 @@ public class Room {
      * @return 如果开始新一局游戏返回true， 若未能开始返回false
      */
     private void newGame(){
-        //如果有座位空着或者座位上的玩家不在ready状态则无法开始新游戏
-        for(int i=0;i<getAvailableSeatCount();i++){
-            Seat playerSeat = seats.get(i);
-            if(playerSeat.getOpenid() == null){
-                String message = String.format("%s号座位没有玩家，游戏无法开始。", i);
-                OnwMessage onwMessage = new OnwMessage(message, null, null);
-                sendMessage(onwMessage);
-                return;
-            }else if(!playerSeat.isReady()){
-                String message = String.format("%s号座位玩家未进入准备状态，游戏无法开始。", i);
-                OnwMessage onwMessage = new OnwMessage(message, null, null);
-                sendMessage(onwMessage);
-                return;
-            }else{
-                //do nothing
-            }
-        }
+//        //如果有座位空着或者座位上的玩家不在ready状态则无法开始新游戏
+//        for(int i=0;i<getAvailableSeatCount();i++){
+//            Seat playerSeat = seats.get(i);
+//            if(playerSeat.getOpenid() == null){
+//                String message = String.format("%s号座位没有玩家，游戏无法开始。", i);
+//                OnwMessage onwMessage = new OnwMessage(message, null, null);
+//                sendMessage(onwMessage);
+//                return;
+//            }else if(!playerSeat.isReady()){
+//                String message = String.format("%s号座位玩家未进入准备状态，游戏无法开始。", i);
+//                OnwMessage onwMessage = new OnwMessage(message, null, null);
+//                sendMessage(onwMessage);
+//                return;
+//            }else{
+//                //do nothing
+//            }
+//        }
 
         //标记进入游戏状态
         scene = Scene.ACTIVATE;
@@ -375,8 +378,9 @@ public class Room {
             keepKeyMessage(playerSeat, onwMessage);
         }
         //向玩家发送身份和操作提示信息
-        OnwMessage onwMessage = new OnwMessage("", ClientAction.ROOM_CHANGED, this);
+        OnwMessage onwMessage = new OnwMessage("New Game...", ClientAction.ROOM_CHANGED, this);
         sendMessage(onwMessage);
+        System.out.println(JSON.toJSONString(this, true));
         if(directVote){
             //没有任何玩家需要行动，直接进入投票阶段
 //            Random random = new Random();
@@ -496,7 +500,7 @@ public class Room {
             //狼的回合
             if(singleWolfSeat != null){
                 //场面上是一头孤狼
-                String message = String.format("查看桌面上第%s张牌是: %s", singleWolfCheckDesktopCard + 1, desktopCards.get(singleWolfCheckDesktopCard).getDisplayName());
+                String message = String.format("查看桌面上第%s张牌是%s", singleWolfCheckDesktopCard + 1, desktopCards.get(singleWolfCheckDesktopCard).getDisplayName());
                 OnwMessage onwMessage = new OnwMessage(message, null, null);
                 keepKeyMessage(singleWolfSeat, onwMessage);
                 String operation = "[孤狼]: " + getNickName(singleWolfSeat) + message;
@@ -641,7 +645,7 @@ public class Room {
             }
             OnwMessage actionMessage = new OnwMessage("三轮讨论后请点击投票按钮。", ClientAction.VOTE_ACTION, null);
             keepTopicMessage(actionMessage);
-            OnwMessage onwMessage = new OnwMessage("", ClientAction.ROOM_CHANGED, this);
+            OnwMessage onwMessage = new OnwMessage("To Vote", ClientAction.ROOM_CHANGED, this);
             sendMessage(onwMessage);
             scene = Scene.VOTE;
         }
@@ -772,7 +776,7 @@ public class Room {
                 OnwMessage hunterMessage = new OnwMessage(report.toString(), ClientAction.HUNTER_VOTE_ACTION, null);
                 keepKeyMessage(hunter, hunterMessage);
 //                sendMessage(hunter.getOpenid(), hunterMessage);
-                OnwMessage onwMessage = new OnwMessage("", ClientAction.ROOM_CHANGED, this);
+                OnwMessage onwMessage = new OnwMessage("Game Over", ClientAction.ROOM_CHANGED, this);
                 sendMessage(hunter.getOpenid(), onwMessage);
                 return ;
             }else if(voteStat.voted(CardFactory.WOLF_0) || voteStat.voted(CardFactory.WOLF_1)){
@@ -794,7 +798,23 @@ public class Room {
                 defeatCamp.add(Camp.WOLF);
             }
         }
+        String outcomeInfo = String.format("[结局]: 村民(%s), 狼人(%s), 皮匠(%s)",
+                getCampOutcome(Camp.VILLAGER, victoryCamp),
+                getCampOutcome(Camp.WOLF, victoryCamp),
+                getCampOutcome(Camp.TANNER, victoryCamp));
+
+        OnwMessage outcomeMessage = new OnwMessage(outcomeInfo, null, outcomeInfo);
+        keepAllKeyMessage(outcomeMessage);
+//        operations.add(outcomeInfo);
         gameFinish(victoryCamp);
+    }
+
+    private String getCampOutcome(Camp camp, Set<Camp> victoryCamp){
+        if(victoryCamp.contains(camp)){
+            return "胜";
+        }else{
+            return "败";
+        }
     }
 
     private void gameFinish(Set<Camp> victoryCamp) {
@@ -812,10 +832,10 @@ public class Room {
         }
         hunterVote = false;
         //TODO 通知所有客户端
-        OnwMessage unreadyMessage = new OnwMessage("本局结束， 勾选‘准备’进入下一局...", ClientAction.GAME_FINISH, null);
+        OnwMessage unreadyMessage = new OnwMessage("重新勾选‘准备’进入下一局...", ClientAction.GAME_FINISH, null);
         keepTopicMessage(unreadyMessage);
 
-        OnwMessage onwMessage = new OnwMessage("", ClientAction.ROOM_CHANGED, this);
+        OnwMessage onwMessage = new OnwMessage("Next Game", ClientAction.ROOM_CHANGED, this);
         sendMessage(onwMessage);
 //        sendMessage(unreadyMessage);
         //游戏进入停止状态，可以重新准备触发下一轮开始
@@ -1107,6 +1127,7 @@ public class Room {
 
     private void sendMessage(String userName, OnwMessage message){
         String roomWebSocketQueue = "/message";
+        this.date = new Date();
         if(simpMessagingTemplate != null){
             System.out.println("send message: " + roomWebSocketQueue);
             simpMessagingTemplate.convertAndSendToUser(userName, roomWebSocketQueue, message);
@@ -1117,6 +1138,7 @@ public class Room {
 
     private void sendMessage(OnwMessage message){
         String roomWebSocketTopic = "/topic/" + id;
+        this.date = new Date();
         if(simpMessagingTemplate != null) {
             System.out.println("send topic: " + roomWebSocketTopic);
             simpMessagingTemplate.convertAndSend("/topic/" + id, message);
@@ -1131,6 +1153,13 @@ public class Room {
 
     private void keepKeyMessage(Seat player, OnwMessage onwMessage){
         player.getInformation().add(onwMessage);
+    }
+
+    private void keepAllKeyMessage(OnwMessage onwMessage){
+        for(int i=0;i<getAvailableSeatCount();i++){
+            Seat seat = seats.get(i);
+            seat.getInformation().add(onwMessage);
+        }
     }
 
     public List<String> getKeyMessages(String userName){
@@ -1199,5 +1228,9 @@ public class Room {
 
     public List<Object> getOperations() {
         return operations;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }

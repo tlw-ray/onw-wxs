@@ -31,7 +31,7 @@ public class Seat{
 	private Integer voteSeat;
 	//该座位玩家被投票的次数
 	private int votedCount;
-	//该座位是否可用
+	//该座位是否可用，例如: 选中了5张卡牌，去掉桌面的3张牌，前2个座位就是可用的
 	private boolean enable = true;
     //本局是否胜利
     private Boolean outcome = null;
@@ -43,7 +43,6 @@ public class Seat{
 	public void reset(){
 	    initializeCard = null;
 	    card = null;
-	    ready = false;
 	    voteSeat = null;
 	    votedCount = 0;
 	    outcome = null;

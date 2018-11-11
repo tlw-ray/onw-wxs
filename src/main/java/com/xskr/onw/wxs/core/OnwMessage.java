@@ -1,5 +1,7 @@
 package com.xskr.onw.wxs.core;
 
+import java.util.Date;
+
 public class OnwMessage {
     //要传递的消息
     private String message;
@@ -7,6 +9,8 @@ public class OnwMessage {
     private ClientAction action;
     //要传递的数据
     private Object data;
+    //时间戳
+    private Date date = new Date();
 //    //是否是游戏信息，消息可分为提示信息、控制信息、游戏信息，
 //    //提示信息告知无关紧要的信息，例如有人进入退出房间了
 //    //控制信息告知客户端接下来可能的操作是怎样的
@@ -41,6 +45,10 @@ public class OnwMessage {
 
     public Object getData() {
         return data;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     @Override

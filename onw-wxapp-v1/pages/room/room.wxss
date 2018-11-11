@@ -75,7 +75,7 @@ page{
 
 #centerView{
   display: flex;
-  flex-grow: 5;
+  flex-grow: 2;
   flex-direction: column;
 
   margin-left: 1%;

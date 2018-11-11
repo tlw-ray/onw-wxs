@@ -19,6 +19,10 @@ Component({
     seat: {
       type: Object,
       value: undefined
+    },
+    room: {
+      type: Object,
+      value: undefined
     }
     //TODO 需要不可点选、可选、被选择等若干状态
   },
@@ -34,6 +38,9 @@ Component({
    * 组件的方法列表
    */
   methods: {
-
+    seatID: function(){
+      return getID();
+      // return new Number(id.substring("seat_".length));
+    }
   }
 })

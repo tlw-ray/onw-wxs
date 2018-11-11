@@ -205,7 +205,7 @@ Page({
     })
 
     wx.onSocketMessage(function (res) {
-      console.log(res);
+      // console.log(res);
       ws.onmessage(res);
     })
 
@@ -213,11 +213,11 @@ Page({
       console.log('WebSocket 已关闭！');
       that.socketOpen = false;
       if(that.socketNeedOpen){
-        setTimeout(function () {
+        // setTimeout(function () {
           wx.connectSocket({
             url: getApp().globalData.wssAPI
-          })
-        }, 2000);
+          });
+        // }, 2000);
       }
     })
 
@@ -236,9 +236,9 @@ Page({
 
         // subscribe topic
         that.data.subscribedTopic = that.data.stompClient.subscribe('/topic/' + roomID, function (content, headers) {
-          console.log('From::::::::: /topic/' + roomID);
-          console.log(content.body);
           var xskrMessage = JSON.parse(content.body);
+          console.log('From::::::::: /topic/' + roomID, content.body);
+          // console.log('From::::::::: /topic/' + roomID, xskrMessage);
           if (xskrMessage.action == 'ROOM_CHANGED') {
             that.setData({
               room: xskrMessage.data
@@ -249,15 +249,15 @@ Page({
 
         // subscribe queue
         that.data.subscribedMessage = that.data.stompClient.subscribe('/user/' + openid + '/message', function (content, headers) {
-          console.log('From:::::::::: /user/' + openid + '/message:', content);
           var xskrMessage = JSON.parse(content.body);
-          console.log(xskrMessage.action);
+          console.log('From:::::::::: /user/' + openid + '/message', content.body);
+          // console.log('From:::::::::: /user/' + openid + '/message', xskrMessage);
           if(xskrMessage.action == 'ROOM_CHANGED'){
             that.setData({
               room: xskrMessage.data
             });
           }
-          console.log(that.data.room);
+          console.log(xskrMessage);
         });
         that.data.stompClient.send('/onw/room/info', { 'openid': openid, 'roomID': roomID}, "Request room infomation.");
       })
