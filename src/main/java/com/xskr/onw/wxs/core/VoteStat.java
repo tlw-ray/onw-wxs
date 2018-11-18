@@ -26,9 +26,9 @@ public class VoteStat {
         return hasWolfInPlayers;
     }
 
-    public boolean onlyVotedTanner() {
-        return votedPlayer.size() == 1 && votedPlayer.iterator().next().getCard() == CardFactory.TANNER;
-    }
+//    public boolean onlyVotedTanner() {
+//        return votedPlayer.size() == 1 && votedPlayer.iterator().next().getCard() == CardFactory.TANNER;
+//    }
 
     public boolean voted(Card card){
         for(Seat player:votedPlayer){

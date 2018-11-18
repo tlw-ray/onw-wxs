@@ -1,25 +1,15 @@
 package com.xskr.onw.wxs.core.action;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 public class GameAction {
 
-    //时间标签
-    private Date date = new Date();
     private GameActionType gameActionType;
     private DataType dataType;
-    private List<Integer> data = new ArrayList();
-    private String message;
+    private int id;
 
-    public GameAction(GameActionType gameActionType) {
-        this.gameActionType = gameActionType;
-    }
-
-    public GameAction(GameActionType gameActionType, DataType dataType) {
+    public GameAction(GameActionType gameActionType, DataType dataType, int id) {
         this.gameActionType = gameActionType;
         this.dataType = dataType;
+        this.id = id;
     }
 
     public GameActionType getGameActionType() {
@@ -38,19 +28,11 @@ public class GameAction {
         this.dataType = dataType;
     }
 
-    public List<Integer> getData() {
-        return data;
+    public int getId() {
+        return id;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setId(int id) {
+        this.id = id;
     }
 }

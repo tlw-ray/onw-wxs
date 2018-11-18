@@ -107,7 +107,7 @@ class Frame
     r.frames = (unmarshallSingle(frame) for frame in frames[0..-2])
 
     # If this contains a final full message or just a acknowledgement of a PING
-    # without any other content, process this frame, otherwise return the
+    # without any other content, nightProcess this frame, otherwise return the
     # contents of the buffer to the caller.
     last_frame = frames[-1..][0]
 
@@ -438,7 +438,7 @@ class Client
   #
   #     client.subscribe(destination,
   #       function(message) {
-  #         // process the message
+  #         // nightProcess the message
   #         // acknowledge it
   #         message.ack();
   #       },
@@ -458,7 +458,7 @@ class Client
   #
   #     client.subscribe(destination,
   #       function(message) {
-  #         // process the message
+  #         // nightProcess the message
   #         // an error occurs, nack it
   #         message.nack();
   #       },

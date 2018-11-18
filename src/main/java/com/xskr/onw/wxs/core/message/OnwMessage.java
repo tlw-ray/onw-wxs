@@ -1,8 +1,11 @@
-package com.xskr.onw.wxs.core;
+package com.xskr.onw.wxs.core.message;
+
+import com.xskr.onw.wxs.core.ClientAction;
 
 import java.util.Date;
 
 public class OnwMessage {
+
     //要传递的消息
     private String message;
     //要执行的指令

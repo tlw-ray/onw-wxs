@@ -10,7 +10,7 @@ public enum GameActionType {
     //投票
     VOTE,
     //检视
-    CHECK,
+    PICK,
     //发现
     DISCOVER,
     //开始

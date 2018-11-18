@@ -1,6 +1,7 @@
 package com.xskr.onw.wxs.core;
 
 import com.xskr.onw.wxs.core.card.Card;
+import com.xskr.onw.wxs.core.message.SeatMessage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import java.util.Set;
 public class Seat{
 	//座位上的玩家如果为null说明该座位没有人坐
 	private String openid;
+	private WxUser wxUser;
 	//该座位之前玩家，用于断线重连，这名玩家可能断线了也可能有事情离开了房间
 	private String oldUserName;
 	//该座位的初始卡牌
@@ -36,7 +38,7 @@ public class Seat{
     //本局是否胜利
     private Boolean outcome = null;
 	//该玩家的关键信息，供断线重连时提供
-	private List<OnwMessage> information = new ArrayList();
+	private List<SeatMessage> information = new ArrayList();
 
 
 	//一局游戏结束重置玩家状态
@@ -48,6 +50,8 @@ public class Seat{
 	    outcome = null;
 	    information.clear();
     }
+
+    @Deprecated
 	public String getOpenid() {
 		return openid;
 	}
@@ -64,7 +68,7 @@ public class Seat{
 		return ready;
 	}
 
-	void setReady(boolean ready) {
+	public void setReady(boolean ready) {
 		this.ready = ready;
 	}
 
@@ -104,11 +108,11 @@ public class Seat{
 		}
 	}
 
-	public List<OnwMessage> getInformation() {
+	public List<SeatMessage> getInformation() {
 		return information;
 	}
 
-	public void setInformation(List<OnwMessage> information) {
+	public void setInformation(List<SeatMessage> information) {
 		this.information = information;
 	}
 
@@ -140,7 +144,15 @@ public class Seat{
         this.outcome = outcome;
     }
 
-    @Override
+	public WxUser getWxUser() {
+		return wxUser;
+	}
+
+	public void setWxUser(WxUser wxUser) {
+		this.wxUser = wxUser;
+	}
+
+	@Override
     public String toString() {
         return "Seat{" +
                 "openid='" + openid + '\'' +

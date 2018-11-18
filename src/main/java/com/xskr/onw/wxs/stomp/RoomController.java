@@ -2,7 +2,7 @@ package com.xskr.onw.wxs.stomp;
 
 import com.xskr.onw.wxs.core.ClientAction;
 import com.xskr.onw.wxs.core.Hall;
-import com.xskr.onw.wxs.core.OnwMessage;
+import com.xskr.onw.wxs.core.message.OnwMessage;
 import com.xskr.onw.wxs.core.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +121,7 @@ public class RoomController {
         String openID = headers.get(KEY_OPEN_ID);
         Integer roomID = Integer.parseInt(headers.get(KEY_ROOM_ID));
         Room room = hall.getRoom(roomID);
-        List<String> keyMessages = room.getKeyMessages(openID);
+//        List<String> keyMessages = room.getKeyMessages(openID);
         //TODO send
     }
 

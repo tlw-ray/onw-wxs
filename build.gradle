@@ -34,7 +34,8 @@ dependencies {
     compile("org.webjars:stomp-websocket:2.3.3")
     compile("org.webjars:jquery:3.1.0")
     compile("org.webjars:bootstrap:3.3.7")
-
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.3'
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
