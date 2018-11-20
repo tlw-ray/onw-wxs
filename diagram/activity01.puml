@@ -1,0 +1,55 @@
+@startuml
+start
+note right
+所有玩家已准备进入行动阶段
+end note
+:告知身份;
+fork
+:化身幽灵.化身;
+    fork
+    :化身.行动;
+    fork again
+    :狼人;
+    if (孤狼) then (yes)
+        :点击桌面牌;
+        if(狼牌) then (yes)
+            :点击另一桌面牌;
+        endif
+    else (no)
+        :辨识同伙;
+    endif
+    fork again
+    :爪牙.辨识狼;
+
+    fork again
+    :守夜人.辨识同伙;
+    end fork
+fork again
+    :预言家;
+    if (点击桌面牌) then (yes)
+        :点击另一张桌面牌;
+    else (no)
+        :点击座位;
+    endif
+fork again
+    :强盗;
+    :点击另一座位;
+fork again
+    :捣蛋鬼;
+    :点击另一座位;
+    :点击另二座位;
+fork again
+    :酒鬼;
+    :点击桌面牌;
+end fork
+:按既定顺序执行所有行动;
+fork
+:化身失眠者;
+fork again
+:失眠者;
+end fork
+stop
+note right
+行动阶段结束进入投票阶段
+end note
+@enduml

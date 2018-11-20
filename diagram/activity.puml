@@ -1,0 +1,31 @@
+@startuml
+start
+:游戏开始;
+fork
+:化身幽灵;
+    fork
+    :化身;
+    fork again
+    :狼人;
+    fork again
+    :爪牙;
+    fork again
+    :守夜人;
+    end fork
+fork again
+:预言家;
+fork again
+:强盗;
+fork again
+:捣蛋鬼;
+fork again
+:酒鬼;
+end fork
+:执行行动;
+fork
+:化身失眠者;
+fork again
+:失眠者;
+end fork
+stop
+@enduml
