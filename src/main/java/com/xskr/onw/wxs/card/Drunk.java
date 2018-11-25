@@ -1,11 +1,11 @@
-package com.xskr.onw.wxs.core.card;
+package com.xskr.onw.wxs.card;
 
-import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
 import com.xskr.onw.wxs.core.action.GameAction;
 import com.xskr.onw.wxs.core.action.GameActionType;
 import com.xskr.onw.wxs.core.message.SeatMessage;
+import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 public class Drunk extends Card {
 
@@ -15,7 +15,7 @@ public class Drunk extends Card {
     }
 
     @Override
-    public void start(Room room, Seat cardOwnerSeat) {
+    public void start(RxOnwRoom room, Seat cardOwnerSeat) {
         actions.clear();
 
         String message = "请选择桌上一张牌与之交换";
@@ -24,21 +24,23 @@ public class Drunk extends Card {
     }
 
     @Override
-    public void nightOperate(Room room, Seat cardOwnerSeat, DataType dataType, int id) {
+    public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
         if(dataType == DataType.DESKTOP_CARD){
             GameAction exchangeDesktopCard = new GameAction(GameActionType.EXCHANGE, DataType.DESKTOP_CARD, id);
             actions.add(exchangeDesktopCard);
-            nightOperateCompleted = true;
+            operated = true;
+            room.attemptFireAllOperatedEvent();
         }else{
             //do nothing
         }
     }
 
     @Override
-    public void nightProcess(Room room, Seat cardOwnerSeat) {
+    public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
         GameAction exchangeDesktopCard = actions.get(0);
-        Card card = room.getDesktopCards().get(exchangeDesktopCard.getId());
-        cardOwnerSeat.setCard(card);
+        Card desktopCard = room.getDesktopCards()[exchangeDesktopCard.getId()];
+        room.getDesktopCards()[exchangeDesktopCard.getId()] = cardOwnerSeat.getCard();
+        cardOwnerSeat.setCard(desktopCard);
         String message = String.format("与桌上第%s张牌交换", exchangeDesktopCard.getId());
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);

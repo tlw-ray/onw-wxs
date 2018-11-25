@@ -1,14 +1,15 @@
-package com.xskr.onw.wxs.core.card;
+package com.xskr.onw.wxs.card;
 
-import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
+import com.xskr.onw.wxs.event.AvatarListener;
 import com.xskr.onw.wxs.core.message.SeatMessage;
+import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Minion extends Card {
+public class Minion extends Card implements AvatarListener {
 
     @Override
     public String getDisplayName() {
@@ -16,20 +17,28 @@ public class Minion extends Card {
     }
 
     @Override
-    public void start(Room room, Seat cardOwnerSeat) {
+    public void start(RxOnwRoom room, Seat cardOwnerSeat) {
 
     }
 
     @Override
-    public void nightOperate(Room room, Seat cardOwnerSeat, DataType dataType, int id) {
-        nightOperateCompleted = true;
+    public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
+        operated = true;
     }
 
     @Override
-    public void nightProcess(Room room, Seat cardOwnerSeat) {
+    public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
+    }
+
+    @Override
+    public Card clone() {
+        return null;
+    }
+
+    @Override
+    public void afterAvatar(RxOnwRoom rxRoom) {
         List<Seat> wolfSeats = new ArrayList();
-        for(int i=0;i<room.getAvailableSeatCount();i++){
-            Seat seat = room.getSeats().get(i);
+        for(Seat seat:rxRoom.getSeats()){
             Card currentCard = seat.getCard();
             if(currentCard.getClass() == Wolf.class){
                 wolfSeats.add(seat);
@@ -51,15 +60,11 @@ public class Minion extends Card {
         }else{
             message = "狼人是: ";
             for(Seat seat:wolfSeats){
-                message += room.getSeatTitle(seat);
+                message += seat.getTitle();
             }
         }
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
-    }
-
-    @Override
-    public Card clone() {
-        return null;
+        processed = true;
     }
 }

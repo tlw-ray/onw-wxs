@@ -1,9 +1,6 @@
 package com.xskr.onw.wxs.rx;
 
-import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.WxUser;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,23 +8,27 @@ import java.util.Map;
 public class RxHall{
 
     private int ROOM_ID_GENERATOR = 0;
-    private Map<Integer, Room> idRoomMap = new HashMap();
+    private Map<Integer, RxOnwRoom> idRoomMap = new HashMap();
 
-    public int create(){
-
-        return 0;
+    public synchronized int create(){
+        RxOnwRoom rxOnwDealer = new RxOnwRoom(ROOM_ID_GENERATOR);
+        idRoomMap.put(ROOM_ID_GENERATOR, rxOnwDealer);
+        int result = ROOM_ID_GENERATOR;
+        ROOM_ID_GENERATOR++;
+        return result;
     }
 
-    public void join(WxUser wxUser, int roomID){
-
+    public synchronized void join(WxUser wxUser, int roomID){
+        RxOnwRoom rxOnwDealer = get(roomID);
+        rxOnwDealer.join(wxUser);
     }
 
-    public void leave(WxUser wxUser, int roomID){
-
+    public synchronized void leave(WxUser wxUser, int roomID){
+        RxOnwRoom rxOnwDealer = get(roomID);
+        rxOnwDealer.leave(wxUser);
     }
 
-    public Room get(int id){
-
-        return null;
+    public synchronized RxOnwRoom get(int id){
+        return idRoomMap.get(id);
     }
 }

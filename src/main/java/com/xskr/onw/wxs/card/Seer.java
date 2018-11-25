@@ -1,12 +1,10 @@
-package com.xskr.onw.wxs.core.card;
+package com.xskr.onw.wxs.card;
 
 import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
-import com.xskr.onw.wxs.core.action.GameAction;
-import com.xskr.onw.wxs.core.action.GameActionType;
 import com.xskr.onw.wxs.core.message.SeatMessage;
-import org.apache.commons.lang3.Range;
+import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 public class Seer extends Card {
 
@@ -20,21 +18,21 @@ public class Seer extends Card {
     }
 
     @Override
-    public void start(Room room, Seat cardOwnerSeat) {
+    public void start(RxOnwRoom room, Seat cardOwnerSeat) {
         pickDesktop0 = null;
         pickDesktop1 = null;
         pickSeat = null;
     }
 
     @Override
-    public void nightOperate(Room room, Seat cardOwnerSeat, DataType dataType, int id) {
+    public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
         //如果还没有选择过牌
         if(pickDesktop0 == null) {
             if (dataType == DataType.DESKTOP_CARD && Room.DESKTOP_CARD_RANGE.contains(id)) {
                 pickDesktop0 = id;
-            } else if (dataType == DataType.SEAT && id>=0 && id<room.getAvailableSeatCount()) {
+            } else if (dataType == DataType.SEAT && id>=0 && id<room.getSeats().size()) {
                 pickSeat = id;
-                nightOperateCompleted = true;
+                operated = true;
             }else{
                 // do nothing
             }
@@ -47,7 +45,7 @@ public class Seer extends Card {
                 }else{
                     pickDesktop1 = id;
                 }
-                nightOperateCompleted = true;
+                operated = true;
             }else{
                 // do nothing
             }
@@ -55,18 +53,19 @@ public class Seer extends Card {
     }
 
     @Override
-    public void nightProcess(Room room, Seat cardOwnerSeat) {
+    public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
         String message;
         if(pickSeat != null){
             Seat seat = room.getSeats().get(pickSeat);
-            message = String.format("查看%s的身份是%s", room.getSeatTitle(seat), seat.getCard().getDisplayName());
+            message = String.format("查看%s的身份是%s", seat.getTitle(), seat.getCard().getDisplayName());
         }else{
-            String card0 = room.getDesktopCards().get(pickDesktop0).getDisplayName();
-            String card1 = room.getDesktopCards().get(pickDesktop1).getDisplayName();
+            String card0 = room.getDesktopCards()[pickDesktop0].getDisplayName();
+            String card1 = room.getDesktopCards()[pickDesktop1].getDisplayName();
             message = String.format("查看桌上卡牌第%s张%s,第%s张是%s", pickDesktop0, card0, pickDesktop1, card1);
         }
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
+        processed = true;
     }
 
     @Override

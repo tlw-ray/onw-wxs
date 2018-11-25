@@ -1,4 +1,4 @@
-package com.xskr.onw.wxs.rx;
+package com.xskr.onw.wxs.intf;
 
 import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.WxUser;

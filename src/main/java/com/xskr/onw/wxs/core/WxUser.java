@@ -6,12 +6,12 @@ public class WxUser {
 
     private String openid;
     private String nickName;
-    private String avatarUrl;
+    private String iconUrl;
 
-    public WxUser(String openid, String nickName, String avatarUrl) {
+    public WxUser(String openid, String nickName, String iconUrl) {
         this.openid = openid;
         this.nickName = nickName;
-        this.avatarUrl = avatarUrl;
+        this.iconUrl = iconUrl;
     }
 
     public String getOpenid() {
@@ -30,12 +30,12 @@ public class WxUser {
         this.nickName = nickName;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getIconUrl() {
+        return iconUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class WxUser {
         return "WxUser{" +
                 "openid='" + openid + '\'' +
                 ", nickName='" + nickName + '\'' +
-                ", avatarUrl='" + avatarUrl + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
                 '}';
     }
 }

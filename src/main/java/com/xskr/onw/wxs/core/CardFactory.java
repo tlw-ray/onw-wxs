@@ -1,6 +1,6 @@
 package com.xskr.onw.wxs.core;
 
-import com.xskr.onw.wxs.core.card.*;
+import com.xskr.onw.wxs.card.*;
 
 public class CardFactory {
 

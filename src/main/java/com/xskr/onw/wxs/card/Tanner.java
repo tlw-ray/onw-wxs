@@ -1,8 +1,8 @@
-package com.xskr.onw.wxs.core.card;
+package com.xskr.onw.wxs.card;
 
-import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
+import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 public class Tanner extends Card {
     @Override
@@ -11,17 +11,17 @@ public class Tanner extends Card {
     }
 
     @Override
-    public void start(Room room, Seat cardOwnerSeat) {
+    public void start(RxOnwRoom room, Seat cardOwnerSeat) {
 
     }
 
     @Override
-    public void nightOperate(Room room, Seat cardOwnerSeat, DataType dataType, int id) {
-        nightOperateCompleted = true;
+    public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
+        operated = true;
     }
 
     @Override
-    public void nightProcess(Room room, Seat cardOwnerSeat) {
+    public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
 
     }
 

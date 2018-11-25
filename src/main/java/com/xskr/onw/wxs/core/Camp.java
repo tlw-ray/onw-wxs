@@ -1,12 +1,9 @@
 package com.xskr.onw.wxs.core;
 
-import com.xskr.onw.wxs.core.card.Card;
-import com.xskr.onw.wxs.core.card.Minion;
-import com.xskr.onw.wxs.core.card.Tanner;
-import com.xskr.onw.wxs.core.card.Wolf;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.xskr.onw.wxs.card.Card;
+import com.xskr.onw.wxs.card.Minion;
+import com.xskr.onw.wxs.card.Tanner;
+import com.xskr.onw.wxs.card.Wolf;
 
 public enum Camp {
 

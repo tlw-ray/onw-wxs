@@ -3,7 +3,7 @@ start
 note right
 所有玩家已准备进入行动阶段
 end note
-:告知身份;
+:分配并告知身份;
 fork
 :化身幽灵.化身;
     fork
@@ -11,10 +11,8 @@ fork
     fork again
     :狼人;
     if (孤狼) then (yes)
-        :点击桌面牌;
-        if(狼牌) then (yes)
-            :点击另一桌面牌;
-        endif
+        :点击桌面牌一;
+        :点击桌面牌二;
     else (no)
         :辨识同伙;
     endif
@@ -24,6 +22,9 @@ fork
     fork again
     :守夜人.辨识同伙;
     end fork
+    note left
+    阶段: 辨识
+    end note
 fork again
     :预言家;
     if (点击桌面牌) then (yes)
@@ -42,12 +43,14 @@ fork again
     :酒鬼;
     :点击桌面牌;
 end fork
+note right
+阶段: 操作
+end note
 :按既定顺序执行所有行动;
-fork
-:化身失眠者;
-fork again
-:失眠者;
-end fork
+note right
+阶段: 验证
+end note
+:随机产生发言起点;
 stop
 note right
 行动阶段结束进入投票阶段

@@ -1,6 +1,6 @@
 package com.xskr.onw.wxs.core;
 
-import com.xskr.onw.wxs.core.card.Card;
+import com.xskr.onw.wxs.card.Card;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import java.util.Set;
  * 因为桌游不同于以往游戏，可能要有人会临时退出或加入，实际上桌游的进展是以玩家座位为不变的基础进行的
  */
 public class Seat{
+	int id;
 	//座位上的玩家如果为null说明该座位没有人坐
 	private String openid;
 	private WxUser wxUser;
@@ -40,6 +41,9 @@ public class Seat{
 	//该玩家的关键信息，供断线重连时提供
 	private List<SeatMessage> information = new ArrayList();
 
+	public Seat(int id){
+		this.id = id;
+	}
 
 	//一局游戏结束重置玩家状态
 	public void reset(){
@@ -50,6 +54,15 @@ public class Seat{
 	    outcome = null;
 	    information.clear();
     }
+
+    public String getTitle(){
+		return String.format("%s. [%s], ", id, wxUser.getNickName());
+	}
+
+	public void removePlayer(){
+		this.setWxUser(null);
+		this.setReady(false);
+	}
 
     @Deprecated
 	public String getOpenid() {
@@ -150,6 +163,7 @@ public class Seat{
 
 	public void setWxUser(WxUser wxUser) {
 		this.wxUser = wxUser;
+		this.ready = false;
 	}
 
 	@Override

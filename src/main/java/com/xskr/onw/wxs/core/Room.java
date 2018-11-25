@@ -1,7 +1,7 @@
 package com.xskr.onw.wxs.core;
 
 import com.alibaba.fastjson.JSON;
-import com.xskr.onw.wxs.core.card.Card;
+import com.xskr.onw.wxs.card.Card;
 import com.xskr.onw.wxs.core.message.OnwMessage;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 import com.xskr.onw.wxs.stomp.RoomController;
@@ -73,7 +73,7 @@ public class Room {
         this.pickRoleCards(cardFactory.WOLF_0, cardFactory.MINION, cardFactory.MASON_0, cardFactory.MASON_1);
         Set<Card> pickedCards = getPickedCards();
         for(int i=0;i<MAX_SEAT;i++){
-            Seat seat = new Seat();
+            Seat seat = new Seat(i);
             seat.setEnable(i<pickedCards.size());
             seats.add(seat);
         }
@@ -1253,4 +1253,5 @@ public class Room {
     public Date getDate() {
         return date;
     }
+
 }

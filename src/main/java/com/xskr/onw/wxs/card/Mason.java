@@ -1,16 +1,15 @@
-package com.xskr.onw.wxs.core.card;
+package com.xskr.onw.wxs.card;
 
-import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
-import com.xskr.onw.wxs.core.action.GameAction;
-import com.xskr.onw.wxs.core.action.GameActionType;
+import com.xskr.onw.wxs.event.AvatarListener;
 import com.xskr.onw.wxs.core.message.SeatMessage;
+import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mason extends Card {
+public class Mason extends Card implements AvatarListener {
 
     @Override
     public String getDisplayName() {
@@ -18,19 +17,28 @@ public class Mason extends Card {
     }
 
     @Override
-    public void start(Room room, Seat cardOwnerSeat) {
+    public void start(RxOnwRoom room, Seat cardOwnerSeat) {
     }
 
     @Override
-    public void nightOperate(Room room, Seat cardOwnerSeat, DataType dataType, int id) {
-        nightOperateCompleted = true;
+    public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
+        operated = true;
     }
 
     @Override
-    public void nightProcess(Room room, Seat cardOwnerSeat) {
+    public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
+
+    }
+
+    @Override
+    public Card clone() {
+        return new Mason();
+    }
+
+    @Override
+    public void afterAvatar(RxOnwRoom rxRoom) {
         List<Seat> partnerSeats = new ArrayList();
-        for(int i=0;i<room.getAvailableSeatCount();i++){
-            Seat seat = room.getSeats().get(i);
+        for(Seat seat:rxRoom.getSeats()){
             if(seat.getCard().getClass() == Mason.class){
                 partnerSeats.add(seat);
             }else if(seat.getCard().getClass() == Doppelganger.class){
@@ -47,14 +55,10 @@ public class Mason extends Card {
 
         String message = "守夜人是: ";
         for(Seat seat:partnerSeats){
-            message += room.getSeatTitle(seat);
+            message += seat.getTitle();
         }
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
-    }
-
-    @Override
-    public Card clone() {
-        return new Mason();
+        processed = true;
     }
 }

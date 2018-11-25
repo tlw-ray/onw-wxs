@@ -1,13 +1,13 @@
-package com.xskr.onw.wxs.core.card;
+package com.xskr.onw.wxs.card;
 
-import com.xskr.onw.wxs.core.Room;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
 import com.xskr.onw.wxs.core.message.SeatMessage;
+import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 public class Robber extends Card {
 
-    Seat snatched;
+    private Seat snatched;
 
     @Override
     public String getDisplayName() {
@@ -15,30 +15,32 @@ public class Robber extends Card {
     }
 
     @Override
-    public void start(Room room, Seat cardOwnerSeat) {
+    public void start(RxOnwRoom room, Seat cardOwnerSeat) {
         snatched = null;
     }
 
     @Override
-    public void nightOperate(Room room, Seat cardOwnerSeat, DataType dataType, int id) {
+    public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
         if(dataType == DataType.SEAT && room.getSeats().get(id) != cardOwnerSeat){
             snatched = room.getSeats().get(id);
-            nightOperateCompleted = true;
+            operated = true;
         }else{
             //无效的输入
         }
     }
 
     @Override
-    public void nightProcess(Room room, Seat cardOwnerSeat) {
+    public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
         Card tempCard = cardOwnerSeat.getCard();
         cardOwnerSeat.setCard(snatched.getCard());
         snatched.setCard(tempCard);
 
-        String message = String.format("抢夺%s并与之交换身份为%s", room.getSeatTitle(snatched),
+        String message = String.format("抢夺%s并与之交换身份为%s", snatched.getTitle(),
                 cardOwnerSeat.getCard().getDisplayName());
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
+
+        processed = true;
     }
 
     @Override

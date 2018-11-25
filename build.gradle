@@ -26,6 +26,7 @@ repositories {
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-websocket')
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
 
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.49'
 
@@ -36,6 +37,8 @@ dependencies {
     compile("org.webjars:bootstrap:3.3.7")
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.3'
+    compile group: 'com.google.guava', name: 'guava', version: '23.0'
+    compile('org.projectlombok:lombok')
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
