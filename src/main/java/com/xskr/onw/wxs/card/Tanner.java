@@ -12,7 +12,8 @@ public class Tanner extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
-
+        super.start(room, cardOwnerSeat);
+        processed = true;
     }
 
     @Override

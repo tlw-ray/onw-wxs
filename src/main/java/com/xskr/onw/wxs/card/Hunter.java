@@ -12,7 +12,11 @@ public class Hunter extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
-
+        super.start(room, cardOwnerSeat);
+        canOperate = true;
+        operated = true;
+        canProcess = true;
+        processed = true;
     }
 
     @Override

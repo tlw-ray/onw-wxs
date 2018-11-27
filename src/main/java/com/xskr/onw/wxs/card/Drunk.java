@@ -16,7 +16,10 @@ public class Drunk extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
+        super.start(room, cardOwnerSeat);
+
         actions.clear();
+        canOperate = true;
 
         String message = "请选择桌上一张牌与之交换";
         SeatMessage seatMessage = new SeatMessage(message);
@@ -30,6 +33,7 @@ public class Drunk extends Card {
             actions.add(exchangeDesktopCard);
             operated = true;
             room.attemptFireAllOperatedEvent();
+            canProcess = true;
         }else{
             //do nothing
         }
@@ -44,6 +48,7 @@ public class Drunk extends Card {
         String message = String.format("与桌上第%s张牌交换", exchangeDesktopCard.getId());
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
+        processed = true;
     }
 
     @Override

@@ -4,14 +4,13 @@ import com.xskr.onw.wxs.core.action.GameAction;
 import com.xskr.onw.wxs.core.action.GameActionType;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
-import com.xskr.onw.wxs.event.AvatarListener;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Wolf extends Card implements AvatarListener {
+public class Wolf extends Card{
 
     private List<Seat> partnerSeats = new ArrayList();
     private Seat cardOwnerSeat;
@@ -27,10 +26,10 @@ public class Wolf extends Card implements AvatarListener {
      * @param cardOwnerSeat
      */
     public void start(RxOnwRoom room, Seat cardOwnerSeat){
+        super.start(room, cardOwnerSeat);
         //初始化
         partnerSeats.clear();
         actions.clear();
-        operated = false;
         this.cardOwnerSeat = cardOwnerSeat;
     }
 
@@ -73,7 +72,7 @@ public class Wolf extends Card implements AvatarListener {
             }else{
                 message = String.format("查看桌面第%s张是%s", actions.get(0).getId());
             }
-            operated = true;
+            processed = true;
             SeatMessage seatMessage = new SeatMessage(message);
             cardOwnerSeat.getInformation().add(seatMessage);
         }
@@ -85,7 +84,6 @@ public class Wolf extends Card implements AvatarListener {
         return wolf;
     }
 
-    @Override
     public void afterAvatar(RxOnwRoom rxRoom) {
         //查看是否有同伴
         for (Seat seat : rxRoom.getSeats()) {
@@ -105,6 +103,7 @@ public class Wolf extends Card implements AvatarListener {
             String message = "请选择两张桌面牌,";
             SeatMessage seatMessage = new SeatMessage(message);
             cardOwnerSeat.getInformation().add(seatMessage);
+            canOperate = true;
         } else {
             //有同伴
             String message = "本局狼玩家是: ";
@@ -113,7 +112,7 @@ public class Wolf extends Card implements AvatarListener {
             }
             SeatMessage seatMessage = new SeatMessage(message);
             cardOwnerSeat.getInformation().add(seatMessage);
-            operated = true;
+            processed = true;
         }
     }
 }

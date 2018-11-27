@@ -5,14 +5,14 @@ import com.xskr.onw.wxs.core.Scene;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.WxUser;
 import com.xskr.onw.wxs.card.*;
-import com.xskr.onw.wxs.event.AvatarListener;
-import com.xskr.onw.wxs.event.AllOperatedListener;
-import com.xskr.onw.wxs.event.AllProcessedListener;
 import com.xskr.onw.wxs.dealer.ActiveOnwDealer;
 import com.xskr.onw.wxs.dealer.OnwDealer;
 import com.xskr.onw.wxs.dealer.PrepareOnwDealer;
 import com.xskr.onw.wxs.dealer.VoteOnwDealer;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class RxOnwRoom extends RxRoom{
@@ -82,12 +82,6 @@ public class RxOnwRoom extends RxRoom{
         }
     }
 
-    public void fireAvatarEvent(){
-        for(AvatarListener avatarListener:eventListeners.getListeners(AvatarListener.class)){
-            avatarListener.afterAvatar(this);
-        }
-    }
-
     public void attemptFireAllOperatedEvent(){
         boolean canFire = true;
         for (Seat seat : seats) {
@@ -97,26 +91,24 @@ public class RxOnwRoom extends RxRoom{
             }
         }
         if(canFire){
-
-        }
-        for(AllOperatedListener operateListener:eventListeners.getListeners(AllOperatedListener.class)){
-            operateListener.afterOperate(this);
-        }
-    }
-
-    public void attemptFireAllProcessedEvent(){
-        boolean canFire = true;
-        for (Seat seat : seats) {
-            if (!seat.getCard().isProcessed()) {
-                canFire = false;
-                break;
+            Set<Seat> seatSet = new HashSet(getSeats());
+            Set<Seat> seatOperated = new HashSet();
+            //执行所有Process
+            for(Card card:cardFactory.CARDS){
+                for(Seat seat:seatSet){
+                    if(seat.getCard() == card){
+                        seatOperated.add(seat);
+                        seat.getCard().nightProcess(this, seat);
+                    }else{
+                        //do nothing
+                    }
+                }
+                //移除行动过的座位提升效率
+                seatSet.removeAll(seatOperated);
             }
-        }
-        if(canFire){
 
-        }
-        for(AllProcessedListener processListener:eventListeners.getListeners(AllProcessedListener.class)){
-            processListener.afterProcess(this);
+            //卡牌执行结束时触发进入投票阶段
+            setScene(Scene.VOTE);
         }
     }
 

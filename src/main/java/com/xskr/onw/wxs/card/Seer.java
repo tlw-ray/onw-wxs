@@ -19,15 +19,16 @@ public class Seer extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
+        super.start(room, cardOwnerSeat);
         pickDesktop0 = null;
         pickDesktop1 = null;
         pickSeat = null;
+        canOperate = true;
     }
 
     @Override
     public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
-        //如果还没有选择过牌
-        if(pickDesktop0 == null) {
+        if(pickDesktop0 == null && pickSeat == null) {
             if (dataType == DataType.DESKTOP_CARD && Room.DESKTOP_CARD_RANGE.contains(id)) {
                 pickDesktop0 = id;
             } else if (dataType == DataType.SEAT && id>=0 && id<room.getSeats().size()) {
@@ -36,7 +37,7 @@ public class Seer extends Card {
             }else{
                 // do nothing
             }
-        }else{
+        }else if(pickDesktop1 == null){
             if(dataType == DataType.DESKTOP_CARD && Room.DESKTOP_CARD_RANGE.contains(id) && id != pickDesktop0){
                 //对查阅的卡牌进行排序，便于后面输出后查阅
                 if(id < pickDesktop0){
@@ -49,6 +50,8 @@ public class Seer extends Card {
             }else{
                 // do nothing
             }
+        }else{
+            //do nothing
         }
     }
 

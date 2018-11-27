@@ -70,7 +70,6 @@ public class PrepareOnwDealer extends OnwDealer{
             //玩家准备状态改变
             boolean ready = !seat.isReady();
             seat.setReady(ready);
-            room.fireAllReadyEvent();
             if(ready) {
                 //检查是否能够触发游戏开始事件
                 //如果玩家数量达到座位数量，且玩家都是ready状态则触发新游戏事件

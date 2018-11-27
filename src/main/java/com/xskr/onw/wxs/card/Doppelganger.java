@@ -5,7 +5,19 @@ import com.xskr.onw.wxs.core.action.DataType;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 import com.xskr.onw.wxs.rx.RxOnwRoom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Doppelganger extends Card {
+
+    private static final List<Class<? extends Card>> operateAfterAvatar = new ArrayList();
+
+    static{
+        //TODO 化身幽灵自身的行动处理流程
+        operateAfterAvatar.add(Wolf.class);
+        operateAfterAvatar.add(Minion.class);
+        operateAfterAvatar.add(Mason.class);
+    }
 
     private Card avatarCard;
 
@@ -20,12 +32,10 @@ public class Doppelganger extends Card {
      * @param cardOwnerSeat
      */
     public void start(RxOnwRoom room, Seat cardOwnerSeat){
+        super.start(room, cardOwnerSeat);
         //初始化
         avatarCard = null;
         canOperate = true;
-        canProcess = false;
-        operated = false;
-        processed = false;
 
         //提示选择化身除自己之外的玩家身份
         String message = "选择一个玩家化身为他的身份";
@@ -46,12 +56,8 @@ public class Doppelganger extends Card {
                 if(seat != cardOwnerSeat){
                     //处理化身操作
                     avatarCard = seat.getCard().clone();
-                    avatarCard.listen(room);
-                    avatarCard.start(room, cardOwnerSeat);
                     //触发化身事件
-                    room.fireAvatarEvent();
-                    //尝试触发所有操作都完成事件, 有可能化身操作是唯一需要的操作
-                    room.attemptFireAllOperatedEvent();
+                    fireAvatarEvent(room);
                 }else{
                     //do nothing
                 }
@@ -62,6 +68,7 @@ public class Doppelganger extends Card {
             //化身后的身份行动
             avatarCard.nightOperate(room, cardOwnerSeat, dataType, id);
             operated = avatarCard.isOperated();
+            canOperate = avatarCard.canOperate();
         }
     }
 
@@ -87,10 +94,17 @@ public class Doppelganger extends Card {
         throw new RuntimeException("not implements");
     }
 
-    @Override
-    public void unListen(RxOnwRoom room) {
-        super.unListen(room);
-        avatarCard.unListen(room);
+    private void fireAvatarEvent(RxOnwRoom room){
+        //被化身牌触发行动
+        avatarCard.start(room, cardOwnerSeat);
+        for(Seat seat:room.getSeats()){
+            Card card = seat.getCard();
+            if(operateAfterAvatar.contains(card.getClass())){
+                card.start(room, cardOwnerSeat);
+            }
+        }
+        //尝试触发所有操作都完成事件
+        room.attemptFireAllOperatedEvent();
     }
 
     public Card getAvatarCard() {

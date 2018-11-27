@@ -65,12 +65,6 @@ public class RxRoom{
         return eventListeners;
     }
 
-    public void fireAllReadyEvent(){
-        for(AllReadyListener allReadyListener:eventListeners.getListeners(AllReadyListener.class)){
-            allReadyListener.afterAllReady(this);
-        }
-    }
-
     public int getId() {
         return id;
     }

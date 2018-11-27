@@ -16,8 +16,10 @@ public class Troublemaker extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
+        super.start(room, cardOwnerSeat);
         seatID0 = null;
         seatID1 = null;
+        canOperate = true;
     }
 
     @Override
@@ -29,6 +31,8 @@ public class Troublemaker extends Card {
                 seatID1 = id;
                 operated = true;
             }
+        }else{
+            // do nothing
         }
     }
 
@@ -42,6 +46,7 @@ public class Troublemaker extends Card {
         String message = String.format("交换了%s和%s的身份", seat0.getTitle(), seat1.getTitle());
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
+        processed = true;
     }
 
     @Override

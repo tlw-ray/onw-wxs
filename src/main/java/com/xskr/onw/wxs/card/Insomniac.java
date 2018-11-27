@@ -16,12 +16,16 @@ public class Insomniac extends Card{
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
+        super.start(room, cardOwnerSeat);
         checked = false;
+        canProcess = true;
+        canOperate = true;
+        operated = true;
     }
 
     @Override
     public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
-        operated = true;
+
     }
 
     @Override

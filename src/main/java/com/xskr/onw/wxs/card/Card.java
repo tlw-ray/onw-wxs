@@ -3,9 +3,6 @@ package com.xskr.onw.wxs.card;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
 import com.xskr.onw.wxs.core.action.GameAction;
-import com.xskr.onw.wxs.event.AvatarListener;
-import com.xskr.onw.wxs.event.AllOperatedListener;
-import com.xskr.onw.wxs.event.AllProcessedListener;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 import com.xskr.onw.wxs.rx.RxOnwRoom;
 
@@ -26,11 +23,13 @@ public abstract class Card {
 
     public abstract String getDisplayName();
 
-    public void identity(Seat cardOwnerSeat){
+    public void start(RxOnwRoom room, Seat cardOwnerSeat){
         cardOwnerSeat.getInformation().clear();
         actions.clear();
 
+        canOperate = false;
         operated = false;
+        canProcess = false;
         processed = false;
         this.cardOwnerSeat = cardOwnerSeat;
 
@@ -38,8 +37,6 @@ public abstract class Card {
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
     }
-
-    public abstract void start(RxOnwRoom room, Seat cardOwnerSeat);
 
     public abstract void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id);
 
@@ -55,43 +52,35 @@ public abstract class Card {
         return canOperate;
     }
 
-    public boolean canProcess() {
-        return canProcess;
-    }
-
     public boolean isOperated() {
         return operated;
     }
 
-    public boolean isProcessed() {
-        return processed;
-    }
-
     public abstract Card clone();
 
-    public void listen(RxOnwRoom room){
-        if(this instanceof AvatarListener){
-            room.getEventListeners().add(AvatarListener.class, (AvatarListener)this);
-        }else if(this instanceof AllOperatedListener){
-            room.getEventListeners().add(AllOperatedListener.class, (AllOperatedListener)this);
-        }else if(this instanceof AllProcessedListener){
-            room.getEventListeners().add(AllProcessedListener.class, (AllProcessedListener)this);
-        }else{
-            //unsupported listener type
-        }
-    }
-
-    public void unListen(RxOnwRoom room){
-        if(this instanceof AvatarListener){
-            room.getEventListeners().remove(AvatarListener.class, (AvatarListener)this);
-        }else if(this instanceof AllOperatedListener){
-            room.getEventListeners().remove(AllOperatedListener.class, (AllOperatedListener)this);
-        }else if(this instanceof AllProcessedListener){
-            room.getEventListeners().remove(AllProcessedListener.class, (AllProcessedListener)this);
-        }else{
-            //unsupported listener type
-        }
-    }
+//    public void listen(RxOnwRoom room){
+//        if(this instanceof AvatarListener){
+//            room.getEventListeners().add(AvatarListener.class, (AvatarListener)this);
+//        }else if(this instanceof AllOperatedListener){
+//            room.getEventListeners().add(AllOperatedListener.class, (AllOperatedListener)this);
+//        }else if(this instanceof AllProcessedListener){
+//            room.getEventListeners().add(AllProcessedListener.class, (AllProcessedListener)this);
+//        }else{
+//            //unsupported listener type
+//        }
+//    }
+//
+//    public void unListen(RxOnwRoom room){
+//        if(this instanceof AvatarListener){
+//            room.getEventListeners().remove(AvatarListener.class, (AvatarListener)this);
+//        }else if(this instanceof AllOperatedListener){
+//            room.getEventListeners().remove(AllOperatedListener.class, (AllOperatedListener)this);
+//        }else if(this instanceof AllProcessedListener){
+//            room.getEventListeners().remove(AllProcessedListener.class, (AllProcessedListener)this);
+//        }else{
+//            //unsupported listener type
+//        }
+//    }
 
 
 }

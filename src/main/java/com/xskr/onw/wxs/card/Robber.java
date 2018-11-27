@@ -16,14 +16,17 @@ public class Robber extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
+        super.start(room, cardOwnerSeat);
         snatched = null;
+        canOperate = true;
     }
 
     @Override
     public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
-        if(dataType == DataType.SEAT && room.getSeats().get(id) != cardOwnerSeat){
+        if(dataType == DataType.SEAT && room.getSeats().get(id) != cardOwnerSeat && snatched == null){
             snatched = room.getSeats().get(id);
             operated = true;
+            canProcess = true;
         }else{
             //无效的输入
         }

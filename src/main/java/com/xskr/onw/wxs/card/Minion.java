@@ -2,14 +2,13 @@ package com.xskr.onw.wxs.card;
 
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.action.DataType;
-import com.xskr.onw.wxs.event.AvatarListener;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 import com.xskr.onw.wxs.rx.RxOnwRoom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Minion extends Card implements AvatarListener {
+public class Minion extends Card{
 
     @Override
     public String getDisplayName() {
@@ -18,27 +17,18 @@ public class Minion extends Card implements AvatarListener {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
-
+        super.start(room, cardOwnerSeat);
+        canProcess = true;
     }
 
     @Override
     public void nightOperate(RxOnwRoom room, Seat cardOwnerSeat, DataType dataType, int id) {
-        operated = true;
     }
 
     @Override
     public void nightProcess(RxOnwRoom room, Seat cardOwnerSeat) {
-    }
-
-    @Override
-    public Card clone() {
-        return null;
-    }
-
-    @Override
-    public void afterAvatar(RxOnwRoom rxRoom) {
         List<Seat> wolfSeats = new ArrayList();
-        for(Seat seat:rxRoom.getSeats()){
+        for(Seat seat:room.getSeats()){
             Card currentCard = seat.getCard();
             if(currentCard.getClass() == Wolf.class){
                 wolfSeats.add(seat);
@@ -66,5 +56,10 @@ public class Minion extends Card implements AvatarListener {
         SeatMessage seatMessage = new SeatMessage(message);
         cardOwnerSeat.getInformation().add(seatMessage);
         processed = true;
+    }
+
+    @Override
+    public Card clone() {
+        return new Minion();
     }
 }

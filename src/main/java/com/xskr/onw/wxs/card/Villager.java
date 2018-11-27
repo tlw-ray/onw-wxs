@@ -13,7 +13,8 @@ public class Villager extends Card {
 
     @Override
     public void start(RxOnwRoom room, Seat cardOwnerSeat) {
-
+        super.start(room, cardOwnerSeat);
+        processed = true;
     }
 
     @Override
