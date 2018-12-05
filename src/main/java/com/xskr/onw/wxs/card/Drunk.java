@@ -57,5 +57,4 @@ public class Drunk extends Card {
         return drunk;
     }
 
-
 }

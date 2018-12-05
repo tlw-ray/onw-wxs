@@ -1,6 +1,7 @@
 package com.xskr.onw.wxs.core;
 
 import com.xskr.onw.wxs.card.Card;
+import com.xskr.onw.wxs.card.Doppelganger;
 import com.xskr.onw.wxs.core.message.SeatMessage;
 
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import java.util.Set;
  * 因为桌游不同于以往游戏，可能要有人会临时退出或加入，实际上桌游的进展是以玩家座位为不变的基础进行的
  */
 public class Seat{
+
+	public static final int VOTE_GIVE_UP = -1;
+
 	int id;
 	//座位上的玩家如果为null说明该座位没有人坐
 	private String openid;
@@ -63,6 +67,12 @@ public class Seat{
 		this.setWxUser(null);
 		this.setReady(false);
 	}
+
+	public boolean isCard(Class<? extends Card> cardClass){
+        return getCard().getClass() == cardClass || (
+                getCard().getClass() == Doppelganger.class &&
+                        ((Doppelganger) getCard()).getAvatarCard().getClass() == cardClass);
+    }
 
     @Deprecated
 	public String getOpenid() {

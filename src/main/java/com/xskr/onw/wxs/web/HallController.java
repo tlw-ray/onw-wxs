@@ -1,14 +1,11 @@
 package com.xskr.onw.wxs.web;
 
-import com.alibaba.fastjson.JSONReader;
 import com.xskr.onw.wxs.core.Hall;
 import com.xskr.onw.wxs.core.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
 import java.util.Map;
 
 @RestController

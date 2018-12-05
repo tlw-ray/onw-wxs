@@ -2,6 +2,7 @@ package com.xskr.onw.wxs.rx;
 
 import com.xskr.onw.wxs.core.*;
 import com.xskr.onw.wxs.card.*;
+import com.xskr.onw.wxs.core.message.SeatMessage;
 import com.xskr.onw.wxs.event.*;
 import org.apache.commons.lang3.Range;
 
@@ -42,6 +43,12 @@ public class RxRoom{
 
     public void sendMessage(){
 
+    }
+
+    public void setMessage(SeatMessage seatMessage){
+        for(Seat seat:seats){
+            seat.getInformation().add(seatMessage);
+        }
     }
 
     public Seat getSeatByWxUser(WxUser wxUser){

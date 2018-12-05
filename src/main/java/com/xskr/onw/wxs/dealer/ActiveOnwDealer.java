@@ -1,6 +1,5 @@
 package com.xskr.onw.wxs.dealer;
 
-import com.xskr.onw.wxs.core.Scene;
 import com.xskr.onw.wxs.core.Seat;
 import com.xskr.onw.wxs.core.WxUser;
 import com.xskr.onw.wxs.core.action.DataType;
@@ -30,12 +29,6 @@ public class ActiveOnwDealer extends GamingOnwDealer{
     }
 
     public synchronized void initialize(){
-        //将所有卡牌实例作为监听器加入到房间回调其他卡牌完成操作后触发的事件
-//        for(Seat seat:room.getSeats()){
-//            Card card = seat.getCard();
-//            card.listen(room);
-//        }
-
         //初始化时所有座位上可以立即操作的卡牌向客户端发送操作提示
         for(Seat seat:room.getSeats()){
             Card card = seat.getCard();
